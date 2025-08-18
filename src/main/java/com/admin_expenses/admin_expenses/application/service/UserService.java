@@ -74,6 +74,7 @@ public class UserService {
             dto.setEmail(user.getUsername());
             dto.setName(user.getName());
             dto.setLastName(user.getLastname());
+            dto.setRole(user.getRole().getName());
             return dto;
         }).collect(Collectors.toList());
     }
