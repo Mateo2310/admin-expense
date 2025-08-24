@@ -1,6 +1,13 @@
 spring:
   application:
     name: admin-expenses
+# MICROSERVICES  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: config-service
+#  config:
+#    import: optional:configserver:.
 
   datasource:
     url: jdbc:postgresql://localhost:5432/expense
@@ -16,3 +23,18 @@ spring:
 
 server:
   port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: admin-expense
+    description: admin expense service
+    version: 1.0.0
