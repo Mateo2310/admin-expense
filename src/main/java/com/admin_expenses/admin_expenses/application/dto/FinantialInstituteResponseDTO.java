@@ -12,13 +12,13 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
-public class FinantialInstitueResponseDTO implements Serializable {
+public class FinantialInstituteResponseDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String name;
     private String type;
 
-    public FinantialInstitueResponseDTO() {
+    public FinantialInstituteResponseDTO() {
     }
 }
