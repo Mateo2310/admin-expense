@@ -26,4 +26,6 @@ public class Card {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public Card() {}
 }

@@ -12,16 +12,13 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
-public class CardRequestDTO implements Serializable {
+public class PurchaseResponseDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private Long cardId;
-    private String cardType;
-    private String alias;
-    private Long userId;
-    private Long finantialInstituteId;
+    private String status;
+    private String message;
 
-    public CardRequestDTO() {
+    public PurchaseResponseDTO() {
     }
 }

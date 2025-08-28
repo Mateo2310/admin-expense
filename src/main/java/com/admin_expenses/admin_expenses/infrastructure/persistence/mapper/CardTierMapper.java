@@ -8,11 +8,11 @@ import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.UserE
 public class CardTierMapper {
     public static CardTier toDomainCardTier(CardTierEntity cardTierEntity) {
         User userDomain = UserMapper.toDomainUser(cardTierEntity.getCreatedBy());
-        return new CardTier(cardTierEntity.getName(), cardTierEntity.getIcon(), cardTierEntity.getCreatedAt(), cardTierEntity.getUpdatedAt(), userDomain);
+        return new CardTier(cardTierEntity.getId(), cardTierEntity.getName(), cardTierEntity.getIcon(), cardTierEntity.getCreatedAt(), cardTierEntity.getUpdatedAt(), userDomain);
     }
 
     public static CardTierEntity toCardTierEntity(CardTier cardTier) {
         UserEntity userEntity = UserMapper.toUserEntity(cardTier.getCreatedBy());
-        return new CardTierEntity(cardTier.getName(), cardTier.getIcon(), cardTier.getCreatedAt(), cardTier.getUpdatedAt(), userEntity);
+        return new CardTierEntity(cardTier.getId(), cardTier.getName(), cardTier.getIcon(), cardTier.getCreatedAt(), cardTier.getUpdatedAt(), userEntity);
     }
 }
