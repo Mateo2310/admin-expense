@@ -32,4 +32,7 @@ public class Purchase {
         this.updatedAt = updatedAt;
         this.createdBy = createdBy;
     }
+
+    public Purchase() {
+    }
 }

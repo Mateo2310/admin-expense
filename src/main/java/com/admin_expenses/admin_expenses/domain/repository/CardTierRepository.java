@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CardTierRepository {
-    Optional<CardTier> findById(Long id);
+    CardTier findById(Long id);
     CardTier save(CardTier cardTier);
     CardTier update(CardTier cardTier);
     void deleteById(Long id);
-    List<CardTier> findByUserId(Long userId);
+    CardTier findByName(String name);
     List<CardTier> findAll();
 }

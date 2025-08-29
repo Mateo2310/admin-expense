@@ -21,13 +21,14 @@ public class FinantialInstituteRepositoryImpl implements FinantialInstituteRepos
     }
 
     @Override
-    public Optional<FinantialInstitute> findById(Long id) {
-        return this.iFinantialInstitueRepository.findById(id).map(FinantialInstituteMapper::toDomainFinantianInstitute);
+    public FinantialInstitute findById(Long id) {
+        Optional<FinantialInstituteEntity> finantialInstituteEntityOptional = this.iFinantialInstitueRepository.findById(id);
+        return finantialInstituteEntityOptional.map(FinantialInstituteMapper::toDomainFinantianInstitute).orElse(null);
     }
 
     @Override
-    public Optional<FinantialInstitute> findByUserId(Long userId) {
-        return Optional.empty();
+    public FinantialInstitute findByUserId(Long userId) {
+        return null;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class FinantialInstituteRepositoryImpl implements FinantialInstituteRepos
 
     @Override
     public FinantialInstitute update(FinantialInstitute finantialInstitute) {
-        return null;
+        return FinantialInstituteMapper.toDomainFinantianInstitute(this.iFinantialInstitueRepository.save(FinantialInstituteMapper.toFinantialInstitute(finantialInstitute)));
     }
 
     @Override
@@ -60,8 +61,8 @@ public class FinantialInstituteRepositoryImpl implements FinantialInstituteRepos
     }
 
     @Override
-    public Optional<FinantialInstitute> findByName(String name) {
+    public FinantialInstitute findByName(String name) {
         FinantialInstituteEntity finantialInstituteEntity = this.iFinantialInstitueRepository.findByName(name);
-        return Optional.of(FinantialInstituteMapper.toDomainFinantianInstitute(finantialInstituteEntity));
+        return FinantialInstituteMapper.toDomainFinantianInstitute(finantialInstituteEntity);
     }
 }

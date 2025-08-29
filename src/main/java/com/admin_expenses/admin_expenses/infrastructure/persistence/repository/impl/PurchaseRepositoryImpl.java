@@ -34,7 +34,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     @Override
     public Purchase update(Purchase purchase) {
-        return null;
+        return PurchaseMapper.toDomainPurchase(this.iPurchaseRepository.save(PurchaseMapper.toDomainPurchase(purchase)));
     }
 
     @Override

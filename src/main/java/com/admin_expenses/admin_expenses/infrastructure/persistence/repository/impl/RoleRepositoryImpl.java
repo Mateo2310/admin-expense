@@ -33,7 +33,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Role update(Role role) {
-        return null;
+        return RoleMapper.toDomainRole(this.iRoleRepository.save(RoleMapper.toRoleEntity(role)));
     }
 
     @Override

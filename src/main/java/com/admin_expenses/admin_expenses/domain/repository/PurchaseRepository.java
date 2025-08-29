@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PurchaseRepository {
-    Optional<Purchase> findById(Long id);
+    Purchase findById(Long id);
     Purchase save(Purchase purchase);
     Purchase update(Purchase purchase);
     void delete(Purchase purchase);
     void deleteById(Long id);
     List<Purchase> findAll();
-    Optional<Purchase> findByUserId(Long userId);
+    Purchase findByUserId(Long userId);
 }

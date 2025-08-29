@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoleService implements IRolesService {
@@ -42,21 +43,36 @@ public class RoleService implements IRolesService {
 
     @Override
     public String delete(String name) {
-        return "";
+        this.delete(name);
+        return "SUCCESS";
     }
 
     @Override
     public String update(RoleCreateDTO dto) {
-        return "";
+        Optional<Role> roleFinded = this.roleRepository.findByName(dto.getName());
+        if (roleFinded.isEmpty()) {
+            return "Role not found";
+        }
+        Role role = roleFinded.get();
+        role.setUpdatedAt(new Date());
+        role.setName(dto.getName());
+        return "SUCESS";
     }
 
     public String deleteById(Long id) {
         this.roleRepository.deleteById(id);
-        return "";
+        return "SUCESS";
     }
 
     @Override
     public RoleResponseDTO findById(Long id) {
-        return null;
+        Optional<Role> role = this.roleRepository.findById(id);
+        if (role.isEmpty()) {
+            return null;
+        }
+        RoleResponseDTO dto = new RoleResponseDTO();
+        dto.setName(role.get().getName());
+
+        return dto;
     }
 }

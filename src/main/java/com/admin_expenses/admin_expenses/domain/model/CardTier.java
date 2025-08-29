@@ -24,4 +24,7 @@ public class CardTier {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public CardTier() {
+    }
 }

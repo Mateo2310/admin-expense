@@ -11,14 +11,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-public class PurchaseResponseDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    private String status;
-    private String message;
-
+public class PurchaseResponseDTO extends ResponseGeneric {
     public PurchaseResponseDTO() {
+        super();
     }
 }

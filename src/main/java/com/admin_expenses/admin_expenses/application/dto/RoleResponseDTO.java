@@ -12,12 +12,10 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
-public class RoleResponseDTO  implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class RoleResponseDTO extends ResponseGeneric {
     private String name;
 
     public RoleResponseDTO() {
+        super();
     }
 }

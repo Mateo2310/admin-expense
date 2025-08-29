@@ -1,7 +1,7 @@
 spring:
   application:
     name: admin-expenses
-# MICROSERVICES  cloud:
+#  cloud:
 #    config:
 #      discovery:
 #        enabled: true

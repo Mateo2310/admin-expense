@@ -20,9 +20,9 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public Optional<Card> findById(Long id) {
+    public Card findById(Long id) {
         return this.iCardRepository.findById(id)
-                .map(CardMapper::toDomainCard);
+                .map(CardMapper::toDomainCard).orElse(null);
     }
 
     @Override
@@ -34,12 +34,7 @@ public class CardRepositoryImpl implements CardRepository {
 
     @Override
     public Card update(Card card) {
-//        Optional<CardEntity> cardEntityOptional = this.iCardRepository.findById(card.getId());
-//        cardEntityOptional.ifPresent(entity -> {
-//            entity.setCardType(card.getCardType());
-//            entity.setFinantialInstituteEntity(FinantialInstituteMapper.);
-//        });
-        return null;
+        return CardMapper.toDomainCard(this.iCardRepository.save(CardMapper.toCardEntity(card)));
     }
 
     @Override
@@ -58,7 +53,7 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public Optional<Card> findByUserId(Long userId) {
-        return Optional.empty();
+    public Card findByUserId(Long userId) {
+        return null;
     }
 }

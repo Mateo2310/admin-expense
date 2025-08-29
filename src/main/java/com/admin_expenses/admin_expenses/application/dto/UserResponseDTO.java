@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserResponseDTO implements Serializable {
+public class UserResponseDTO extends ResponseGeneric {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -20,5 +20,6 @@ public class UserResponseDTO implements Serializable {
     private String role;
 
     public UserResponseDTO() {
+        super();
     }
 }

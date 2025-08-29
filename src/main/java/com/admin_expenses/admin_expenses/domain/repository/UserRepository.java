@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> findById(Long id);
+    User findById(Long id);
     User save(User user);
     User update(User user);
     void delete(User user);
     void deleteById(Long id);
     List<User> findAll();
-    Optional<User> findByUserId(Long userId);
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
 }

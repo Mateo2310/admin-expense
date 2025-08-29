@@ -20,9 +20,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public User findById(Long id) {
         return this.iUserRepository.findById(id)
-                .map(UserMapper::toDomainUser);
+                .map(UserMapper::toDomainUser).orElse(null);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(User user) {
-        return null;
+        return UserMapper.toDomainUser(this.iUserRepository.save(UserMapper.toUserEntity(user)));
     }
 
     @Override
@@ -53,13 +53,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByUserId(Long userId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<User> findByUsername(String username) {
+    public User findByUsername(String username) {
         return this.iUserRepository.findByUsername(username)
-                .map(UserMapper::toDomainUser);
+                .map(UserMapper::toDomainUser).orElse(null);
     }
 }

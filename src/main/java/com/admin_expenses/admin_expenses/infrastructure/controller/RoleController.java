@@ -18,13 +18,13 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createRole(@RequestBody RoleCreateDTO roleCreateDTO) {
+    public ResponseEntity<?> createRole(@RequestBody RoleCreateDTO roleCreateDTO) {
         String dto = iRolesService.create(roleCreateDTO);
         return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping
-    public ResponseEntity<List<RoleResponseDTO>> findAll() {
+    public ResponseEntity<?> findAll() {
         List<RoleResponseDTO> roles = iRolesService.findAll();
         return ResponseEntity.ok().body(roles);
     }

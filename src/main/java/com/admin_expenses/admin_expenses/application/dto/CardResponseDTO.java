@@ -12,13 +12,15 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
-public class CardResponseDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class CardResponseDTO extends ResponseGeneric {
     private String status;
     private String message;
+    private String cardType;
+    private String alias;
+    private String finantialInstituteName;
+    private String finantialInstituteType;
 
     public CardResponseDTO() {
+        super();
     }
 }
