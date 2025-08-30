@@ -3,15 +3,17 @@ package com.admin_expenses.admin_expenses.application.service;
 import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
 import com.admin_expenses.admin_expenses.application.dto.UserResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
+import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.Role;
 import com.admin_expenses.admin_expenses.domain.model.User;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,95 +28,134 @@ public class UserService implements IUserService {
 
     @Override
     public String create(UserCreateDTO creationDTO) {
-        // 1. Verificar que exista el rol
-        Role role = this.roleRepository.findByName(creationDTO.getRoleName());
-        // Si el rol no se encuentra, lanzar una excepción
-        if (role.isEmpty()) {
-            throw new IllegalArgumentException("El rol '" + creationDTO.getRoleName() + "' especificado no existe.");
-            // O una excepción personalizada más específica, por ejemplo:
-            // throw new RoleNotFoundException("El rol especificado no existe.");
-        }
-        // 2. Mapear DTO a entidad de Dominio
-        System.out.println("Role name: " + role.getName());
-        User newUser = new User();
-        newUser.setName(creationDTO.getName());
-        newUser.setLastname(creationDTO.getLastname());
-        newUser.setUsername(creationDTO.getEmail());
-        newUser.setRole(role);
-        newUser.setCreatedAt(new Date());
-        newUser.setUpdatedAt(new Date());
+        try {
+            // 1. Verificar que exista el rol
+            Role role = this.roleRepository.findByName(creationDTO.getRoleName());
+            // Si el rol no se encuentra, lanzar una excepción
+            if (role == null) {
+                throw new RoleNotFoundException(creationDTO.getRoleName());
+            }
+            // 2. Mapear DTO a entidad de Dominio
+            System.out.println("Role name: " + role.getName());
+            User newUser = new User();
+            newUser.setName(creationDTO.getName());
+            newUser.setLastname(creationDTO.getLastname());
+            newUser.setUsername(creationDTO.getEmail());
+            newUser.setRole(role);
+            newUser.setCreatedAt(new Date());
+            newUser.setUpdatedAt(new Date());
 
-        // 3. Llamar al repositorio de Dominio para guardar
-        User savedUser = userRepository.save(newUser);
-        if (savedUser == null) {
-            return "ERROR";
+            // 3. Llamar al repositorio de Dominio para guardar
+            this.userRepository.save(newUser);
+            return "SUCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
-
-        return "SUCESS";
     }
 
     @Override
     public String delete(String name) {
-        User userFinded = this.userRepository.findByUsername(name);
-        if (userFinded.isPresent()) {
-            this.userRepository.delete(userFinded.get());
+        try {
+            User userFinded = this.userRepository.findByUsername(name);
+            if (userFinded == null) {
+                throw new UserNotFoundException(name);
+            }
+            this.userRepository.delete(userFinded);
             return "SUCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
-        return "ERROR";
     }
 
     @Override
     public String update(UserCreateDTO dto) {
-        User userFinded = this.userRepository.findByUsername(dto.getName());
-        Optional<Role> roleFinded = this.roleRepository.findByName(dto.getRoleName());
+        try {
+            User user = this.userRepository.findByUsername(dto.getName());
+            Role roleFinded = this.roleRepository.findByName(dto.getRoleName());
+            if (user == null) {
+                throw new UserNotFoundException(dto.getName());
+            }
+            if (roleFinded == null) {
+                throw new RoleNotFoundException(dto.getRoleName());
+            }
+            user.setLastname(dto.getLastname());
+            user.setUsername(dto.getEmail());
+            user.setUpdatedAt(new Date());
+            user.setRole(roleFinded);
 
-        if (userFinded.isEmpty() ||  roleFinded.isEmpty()) {
-            return "ERROR";
+            this.userRepository.update(user);
+            return "SUCCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
-
-        User user = userFinded.get();
-        user.setLastname(dto.getLastname());
-        user.setUsername(dto.getEmail());
-        user.setUpdatedAt(new Date());
-        user.setRole(roleFinded.get());
-
-        this.userRepository.update(user);
-        return "SUCCESS";
     }
 
     @Override
     public String deleteById(Long id) {
-        this.userRepository.deleteById(id);
-        return "SUCCESS";
+        try {
+            this.userRepository.deleteById(id);
+            return "SUCCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 
     @Override
     public UserResponseDTO findById(Long id) {
-        // 1. Llamar al repositorio de Dominio para obtener
-        User userOptional = userRepository.findById(id);
-
-        if (userOptional.isEmpty()) {
-            return null;
+        try {
+            // 1. Llamar al repositorio de Dominio para obtener
+            User user = userRepository.findById(id);
+            if (user == null) {
+                throw new UserNotFoundException(id);
+            }
+            UserResponseDTO responseDTO = new UserResponseDTO();
+            responseDTO.setEmail(user.getUsername());
+            responseDTO.setName(user.getName());
+            responseDTO.setLastName(user.getLastname());
+            return responseDTO;
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
-
-        UserResponseDTO responseDTO = new UserResponseDTO();
-        User user = userOptional.get();
-        responseDTO.setEmail(user.getUsername());
-        responseDTO.setName(user.getName());
-        responseDTO.setLastName(user.getLastname());
-        return responseDTO;
     }
 
     @Override
     public List<UserResponseDTO> findAll() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(user -> {
-            UserResponseDTO dto = new UserResponseDTO();
-            dto.setEmail(user.getUsername());
-            dto.setName(user.getName());
-            dto.setLastName(user.getLastname());
-            dto.setRole(user.getRole().getName());
-            return dto;
-        }).collect(Collectors.toList());
+        try {
+            List<User> users = userRepository.findAll();
+            return users.stream().map(user -> {
+                UserResponseDTO dto = new UserResponseDTO();
+                dto.setEmail(user.getUsername());
+                dto.setName(user.getName());
+                dto.setLastName(user.getLastname());
+                dto.setRole(user.getRole().getName());
+                return dto;
+            }).collect(Collectors.toList());
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 }

@@ -8,7 +8,6 @@ import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.i
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -20,9 +19,9 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public Optional<Purchase> findById(Long id) {
+    public Purchase findById(Long id) {
         return this.iPurchaseRepository.findById(id)
-                .map(PurchaseMapper::toDomainPurchase);
+                .map(PurchaseMapper::toDomainPurchase).orElse(null);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public Optional<Purchase> findByUserId(Long userId) {
-        return Optional.empty();
+    public Purchase findByUserId(Long userId) {
+        return null;
     }
 }

@@ -3,13 +3,15 @@ package com.admin_expenses.admin_expenses.application.service;
 import com.admin_expenses.admin_expenses.application.dto.RoleCreateDTO;
 import com.admin_expenses.admin_expenses.application.dto.RoleResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IRolesService;
+import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.Role;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RoleService implements IRolesService {
@@ -21,12 +23,20 @@ public class RoleService implements IRolesService {
 
     @Override
     public List<RoleResponseDTO> findAll() {
-        List<Role> roles = roleRepository.findAll();
-        return roles.stream().map(role ->  {
-            RoleResponseDTO dto = new RoleResponseDTO();
-            dto.setName(role.getName());
-            return dto;
-        }).toList();
+        try {
+            List<Role> roles = roleRepository.findAll();
+            return roles.stream().map(role ->  {
+                RoleResponseDTO dto = new RoleResponseDTO();
+                dto.setName(role.getName());
+                return dto;
+            }).toList();
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 
     @Override
@@ -35,44 +45,73 @@ public class RoleService implements IRolesService {
         newRole.setName(dto.getName());
         newRole.setCreatedAt(new Date());
         newRole.setUpdatedAt(new Date());
-        Role savedRole = roleRepository.save(newRole);
-        RoleResponseDTO dtoResponse = new RoleResponseDTO();
-        dtoResponse.setName(savedRole.getName());
-        return "";
+        try {
+            this.roleRepository.save(newRole);
+            return "SUCCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 
     @Override
     public String delete(String name) {
-        this.delete(name);
-        return "SUCCESS";
+        return null;
     }
 
     @Override
     public String update(RoleCreateDTO dto) {
-        Optional<Role> roleFinded = this.roleRepository.findByName(dto.getName());
-        if (roleFinded.isEmpty()) {
-            return "Role not found";
+        try {
+            Role role = this.roleRepository.findByName(dto.getName());
+            if (role == null) {
+                throw new RoleNotFoundException(dto.getName());
+            }
+            role.setUpdatedAt(new Date());
+            role.setName(dto.getName());
+            this.roleRepository.save(role);
+            return "SUCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
-        Role role = roleFinded.get();
-        role.setUpdatedAt(new Date());
-        role.setName(dto.getName());
-        return "SUCESS";
     }
 
     public String deleteById(Long id) {
-        this.roleRepository.deleteById(id);
-        return "SUCESS";
+        try {
+            this.roleRepository.deleteById(id);
+            return "SUCESS";
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 
     @Override
     public RoleResponseDTO findById(Long id) {
-        Optional<Role> role = this.roleRepository.findById(id);
-        if (role.isEmpty()) {
-            return null;
-        }
-        RoleResponseDTO dto = new RoleResponseDTO();
-        dto.setName(role.get().getName());
+        try {
+            Role role = this.roleRepository.findById(id);
+            if (role == null) {
+                throw new RoleNotFoundException(id);
+            }
+            RoleResponseDTO dto = new RoleResponseDTO();
+            dto.setName(role.getName());
 
-        return dto;
+            return dto;
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+        } catch (CannotCreateTransactionException cctex) {
+            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
+        } catch (Exception e) {
+            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+        }
     }
 }

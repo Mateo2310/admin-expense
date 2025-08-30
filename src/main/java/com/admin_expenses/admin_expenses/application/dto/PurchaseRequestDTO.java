@@ -14,6 +14,7 @@ public class PurchaseRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private Long id;
     private String productName;
     private Integer quantity;
     private Double costTotal;

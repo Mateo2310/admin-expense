@@ -12,6 +12,14 @@ import java.io.Serializable;
 @Setter
 @ToString
 public class PurchaseResponseDTO extends ResponseGeneric {
+    private Long id;
+    private String productName;
+    private Integer quantity;
+    private Double costTotal;
+    private String purchaseType;
+    private Integer fees;
+    private CardResponseDTO card;
+
     public PurchaseResponseDTO() {
         super();
     }

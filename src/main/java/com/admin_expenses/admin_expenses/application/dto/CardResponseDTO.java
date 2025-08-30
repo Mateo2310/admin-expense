@@ -13,8 +13,6 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 public class CardResponseDTO extends ResponseGeneric {
-    private String status;
-    private String message;
     private String cardType;
     private String alias;
     private String finantialInstituteName;
