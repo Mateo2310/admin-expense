@@ -158,4 +158,9 @@ public class UserService implements IUserService {
             throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
         }
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return this.userRepository.findByUsername(username);
+    }
 }

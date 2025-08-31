@@ -26,6 +26,9 @@ public class UserEntity {
     @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "password")
+    private String password;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity roleEntity;
@@ -36,10 +39,21 @@ public class UserEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public UserEntity(String name, String username, String lastname, RoleEntity roleEntity, Date createdAt, Date updatedAt) {
+    public UserEntity(Long id, String name, String username, String lastname, RoleEntity roleEntity, Date createdAt, Date updatedAt) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.lastname = lastname;
+        this.roleEntity = roleEntity;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public UserEntity(String name, String username, String lastname, String password, RoleEntity roleEntity, Date createdAt, Date updatedAt) {
+        this.name = name;
+        this.username = username;
+        this.lastname = lastname;
+        this.password = password;
         this.roleEntity = roleEntity;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

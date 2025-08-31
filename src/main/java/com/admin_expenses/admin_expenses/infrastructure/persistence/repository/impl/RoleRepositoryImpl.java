@@ -20,8 +20,8 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Optional<Role> findById(Long id) {
-        return this.iRoleRepository.findById(id).map(RoleMapper::toDomainRole);
+    public Role findById(Long id) {
+        return this.iRoleRepository.findById(id).map(RoleMapper::toDomainRole).orElse(null);
     }
 
     @Override
@@ -52,12 +52,12 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Optional<Role> findByUserId(Long userId) {
-        return Optional.empty();
+    public Role findByUserId(Long userId) {
+        return null;
     }
 
     @Override
-    public Optional<Role> findByName(String name) {
-        return this.iRoleRepository.findByName(name).map(RoleMapper::toDomainRole);
+    public Role findByName(String name) {
+        return this.iRoleRepository.findByName(name).map(RoleMapper::toDomainRole).orElse(null);
     }
 }

@@ -24,8 +24,8 @@ public class CardTierRepositoryImpl implements CardTierRepository {
     }
 
     @Override
-    public Optional<CardTier> findById(Long id) {
-        return this.iCardTierRepository.findById(id).map(CardTierMapper::toDomainCardTier);
+    public CardTier findById(Long id) {
+        return this.iCardTierRepository.findById(id).map(CardTierMapper::toDomainCardTier).orElse(null);
     }
 
     @Override
@@ -46,9 +46,9 @@ public class CardTierRepositoryImpl implements CardTierRepository {
     }
 
     @Override
-    public Optional<CardTier> findByName(String name) {
+    public CardTier findByName(String name) {
         Optional<CardTierEntity> cardTierFinded = this.iCardTierRepository.findCardTierEntitieByName(name);
-        return cardTierFinded.map(CardTierMapper::toDomainCardTier);
+        return cardTierFinded.map(CardTierMapper::toDomainCardTier).orElse(null);
     }
 
     @Override
