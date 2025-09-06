@@ -1,28 +1,40 @@
 package com.admin_expenses.admin_expenses.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PurchaseRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @NotNull(message = "El id es obligatorio")
     private Long id;
-    private String productName;
-    private Integer quantity;
-    private Double costTotal;
-    private String purchaseType;
-    private Integer fees;
-    private Long cardId;
-    private Long userId;
 
-    public PurchaseRequestDTO() {
-    }
+    @NotBlank(message = "El nombre del producto es obligatorio")
+    private String productName;
+
+    @NotNull(message = "La cantidad es obligatoria")
+    private Integer quantity;
+
+    @NotNull(message = "El costo total es obligatoria")
+    private Double costTotal;
+
+    @NotBlank(message = "El tipo de gasto es obligatorio")
+    private String purchaseType;
+
+    @NotNull(message = "La tarifa es obligatoria")
+    private Integer fees;
+
+    @NotNull(message = "El id de la tarjeta es obligatoria")
+    private Long cardId;
+
+    @NotNull(message = "El id del usuario es obligatoria")
+    private Long userId;
 }

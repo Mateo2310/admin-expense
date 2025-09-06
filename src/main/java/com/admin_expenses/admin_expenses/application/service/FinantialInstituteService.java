@@ -9,6 +9,7 @@ import com.admin_expenses.admin_expenses.domain.model.User;
 import com.admin_expenses.admin_expenses.domain.repository.FinantialInstituteRepository;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
@@ -18,14 +19,10 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FinantialInstituteService implements IFinantialInstituteService {
     private final UserRepository userRepository;
     private final FinantialInstituteRepository finantialInstituteRepository;
-
-    public FinantialInstituteService(UserRepository userRepository, RoleRepository roleRepository, FinantialInstituteRepository finantialInstituteRepository) {
-        this.userRepository = userRepository;
-        this.finantialInstituteRepository = finantialInstituteRepository;
-    }
 
     public String create(FinantialInstituteRequestDTO finantialInstituteRequest) {
        try {
@@ -45,11 +42,11 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
            return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-           throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+           throw new UnexpectedException("Error inesperado al guardar la entidad financiera", e);
        }
     }
 
@@ -73,11 +70,11 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar la entidad financiera", e);
         }
     }
 
@@ -102,15 +99,13 @@ public class FinantialInstituteService implements IFinantialInstituteService {
             FinantialInstituteResponseDTO finantialInstituteResponseDTO = new FinantialInstituteResponseDTO();
             finantialInstituteResponseDTO.setName(finantialInstitute.getName());
             finantialInstituteResponseDTO.setType(finantialInstitute.getType());
-            finantialInstituteResponseDTO.setMessage("SUCCESS");
-            finantialInstituteResponseDTO.setStatus("200");
             return finantialInstituteResponseDTO;
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar la entidad financiera", e);
         }
     }
 
@@ -128,11 +123,11 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
             return finantialInstituteResponseDTOList;
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar la entidad financiera", e);
         }
     }
 
@@ -145,11 +140,11 @@ public class FinantialInstituteService implements IFinantialInstituteService {
             this.finantialInstituteRepository.delete(finantialInstitute);
             return "DELETED";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar la entidad financiera", e);
         }
     }
 }

@@ -1,24 +1,16 @@
 package com.admin_expenses.admin_expenses.application.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
-public class CardResponseDTO extends ResponseGeneric {
+@NoArgsConstructor
+public class CardResponseDTO {
+    private Long id;
     private String cardType;
     private String alias;
     private String finantialInstituteName;
     private String finantialInstituteType;
-
-    public CardResponseDTO() {
-        super();
-    }
 }

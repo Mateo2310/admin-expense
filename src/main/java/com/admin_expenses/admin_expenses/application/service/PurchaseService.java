@@ -54,11 +54,11 @@ public class PurchaseService implements IPurchaseService {
             purchase.setCreatedBy(userFinded);
             this.purchaseRepository.save(purchase);
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el gasto", e);
         }
         return "SUCCESS";
     }
@@ -81,11 +81,11 @@ public class PurchaseService implements IPurchaseService {
             this.purchaseRepository.update(purchase);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el gasto", e);
         }
     }
 
@@ -95,11 +95,11 @@ public class PurchaseService implements IPurchaseService {
             this.purchaseRepository.deleteById(id);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el gasto", e);
         }
     }
 
@@ -109,19 +109,17 @@ public class PurchaseService implements IPurchaseService {
             Purchase purchase = this.purchaseRepository.findById(id);
             return getPurchaseResponseDTO(purchase);
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el gasto", e);
         }
     }
 
     private static PurchaseResponseDTO getPurchaseResponseDTO(Purchase purchase) {
         PurchaseResponseDTO purchaseResponseDTO = new PurchaseResponseDTO();
         CardResponseDTO cardResponseDTO = new CardResponseDTO();
-        purchaseResponseDTO.setMessage("Success");
-        purchaseResponseDTO.setStatus("200");
         purchaseResponseDTO.setPurchaseType(purchase.getPurchaseType());
         purchaseResponseDTO.setFees(purchase.getFees());
         purchaseResponseDTO.setId(purchase.getId());
@@ -140,11 +138,11 @@ public class PurchaseService implements IPurchaseService {
             List<Purchase> purchaseList = this.purchaseRepository.findAll();
             return purchaseList.stream().map(PurchaseService::getPurchaseResponseDTO).toList();
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el gasto", e);
         }
     }
 }

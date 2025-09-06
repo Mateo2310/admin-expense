@@ -32,7 +32,7 @@ public class JwtService {
             Map<String, Object> claims,
             UserDetails userDetails) {
         long now = System.currentTimeMillis();
-        long expiration = 1000 * 60 * 60; // 1 hora
+        long expiration = now + 1000 * 60 * 60; // 1 hora
         return Jwts
                 .builder()
                 .claims(claims)

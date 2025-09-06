@@ -1,4 +1,4 @@
-package com.admin_expenses.admin_expenses.infrastructure.controller.auth.dto;
+package com.admin_expenses.admin_expenses.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

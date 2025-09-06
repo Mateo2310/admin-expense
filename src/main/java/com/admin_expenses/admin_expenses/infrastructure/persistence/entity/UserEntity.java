@@ -2,15 +2,13 @@ package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "users_expenses")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public class UserEntity {
     @Id
@@ -29,7 +27,7 @@ public class UserEntity {
     @Column(name = "password")
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity roleEntity;
 

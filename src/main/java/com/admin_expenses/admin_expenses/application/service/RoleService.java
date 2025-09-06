@@ -31,11 +31,11 @@ public class RoleService implements IRolesService {
                 return dto;
             }).toList();
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el rol", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el rol", e);
         }
     }
 
@@ -49,11 +49,11 @@ public class RoleService implements IRolesService {
             this.roleRepository.save(newRole);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el rol", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el rol", e);
         }
     }
 
@@ -74,11 +74,11 @@ public class RoleService implements IRolesService {
             this.roleRepository.save(role);
             return "SUCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el rol", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el rol", e);
         }
     }
 
@@ -87,11 +87,11 @@ public class RoleService implements IRolesService {
             this.roleRepository.deleteById(id);
             return "SUCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el rol", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el rol", e);
         }
     }
 
@@ -107,11 +107,11 @@ public class RoleService implements IRolesService {
 
             return dto;
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el rol", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el rol", e);
         }
     }
 }

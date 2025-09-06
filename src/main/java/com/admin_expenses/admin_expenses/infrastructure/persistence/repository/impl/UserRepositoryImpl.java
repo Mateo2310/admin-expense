@@ -8,7 +8,6 @@ import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.i
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository

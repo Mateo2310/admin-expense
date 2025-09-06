@@ -1,14 +1,20 @@
 package com.admin_expenses.admin_expenses.application.service;
 
 import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
-import com.admin_expenses.admin_expenses.application.dto.UserResponseDTO;
+import com.admin_expenses.admin_expenses.application.dto.UserDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.Role;
 import com.admin_expenses.admin_expenses.domain.model.User;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
+import com.admin_expenses.admin_expenses.infrastructure.security.JwtService;
+import com.admin_expenses.admin_expenses.infrastructure.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
@@ -17,43 +23,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public String create(UserCreateDTO creationDTO) {
         try {
-            // 1. Verificar que exista el rol
             Role role = this.roleRepository.findByName(creationDTO.getRoleName());
-            // Si el rol no se encuentra, lanzar una excepción
             if (role == null) {
                 throw new RoleNotFoundException(creationDTO.getRoleName());
             }
-            // 2. Mapear DTO a entidad de Dominio
-            System.out.println("Role name: " + role.getName());
             User newUser = new User();
             newUser.setName(creationDTO.getName());
             newUser.setLastname(creationDTO.getLastname());
             newUser.setUsername(creationDTO.getEmail());
+            newUser.setPassword(this.passwordEncoder.encode(creationDTO.getPassword()));
             newUser.setRole(role);
             newUser.setCreatedAt(new Date());
             newUser.setUpdatedAt(new Date());
 
             // 3. Llamar al repositorio de Dominio para guardar
-            this.userRepository.save(newUser);
-            return "SUCESS";
+            User userSaved = this.userRepository.save(newUser);
+            return this.jwtService.generateToken(new UserDetailsImpl(userSaved));
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            logger.error("Error al crear usuario: {}", e.getMessage());
+            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
 
@@ -67,11 +70,11 @@ public class UserService implements IUserService {
             this.userRepository.delete(userFinded);
             return "SUCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
 
@@ -94,11 +97,11 @@ public class UserService implements IUserService {
             this.userRepository.update(user);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
 
@@ -108,42 +111,44 @@ public class UserService implements IUserService {
             this.userRepository.deleteById(id);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
 
     @Override
-    public UserResponseDTO findById(Long id) {
+    public UserDTO findById(Long id) {
         try {
             // 1. Llamar al repositorio de Dominio para obtener
             User user = userRepository.findById(id);
             if (user == null) {
                 throw new UserNotFoundException(id);
             }
-            UserResponseDTO responseDTO = new UserResponseDTO();
+            UserDTO responseDTO = new UserDTO();
+            responseDTO.setId(user.getId());
             responseDTO.setEmail(user.getUsername());
             responseDTO.setName(user.getName());
             responseDTO.setLastName(user.getLastname());
             return responseDTO;
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
 
     @Override
-    public List<UserResponseDTO> findAll() {
+    public List<UserDTO> findAll() {
         try {
             List<User> users = userRepository.findAll();
             return users.stream().map(user -> {
-                UserResponseDTO dto = new UserResponseDTO();
+                UserDTO dto = new UserDTO();
+                dto.setId(user.getId());
                 dto.setEmail(user.getUsername());
                 dto.setName(user.getName());
                 dto.setLastName(user.getLastname());
@@ -151,11 +156,11 @@ public class UserService implements IUserService {
                 return dto;
             }).collect(Collectors.toList());
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al obtener usuarios", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al obtener usuarios", e);
         }
     }
 

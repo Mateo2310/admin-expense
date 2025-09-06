@@ -1,42 +1,57 @@
 package com.admin_expenses.admin_expenses.infrastructure.handler;
 
-import com.admin_expenses.admin_expenses.domain.exception.BusinessException;
-import com.admin_expenses.admin_expenses.domain.exception.CardNotFoundException;
-import com.admin_expenses.admin_expenses.domain.exception.DatabaseUnavailableException;
+import com.admin_expenses.admin_expenses.application.dto.ResponseGeneric;
+import com.admin_expenses.admin_expenses.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(CardNotFoundException ex) {
+    public ResponseEntity<?> handleNotFound(CardNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", 404,
-                        "error", "Not Found",
-                        "message", ex.getMessage()
-                ));
+                .body(new ResponseGeneric<>("error", ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(CardTierNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(CardTierNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseGeneric<>("error", ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(FinantialInstituteNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(FinantialInstituteNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseGeneric<>("error", ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(RoleNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseGeneric<>("error", ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseGeneric<>("error", ex.getMessage(), null));
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<String> handleBusiness(BusinessException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ResponseEntity<?> handleBusiness(BusinessException ex) {
+        return ResponseEntity.badRequest().body(new ResponseGeneric<>("error", ex.getMessage(), null));
     }
 
     @ExceptionHandler(DatabaseUnavailableException.class)
-    public ResponseEntity<String> handleDatabase(DatabaseUnavailableException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ex.getMessage());
+    public ResponseEntity<?> handleDatabase(DatabaseUnavailableException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ResponseGeneric<>("error", ex.getMessage(), null));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleUnexpected(Exception ex) {
-        return ResponseEntity.internalServerError().body("Ocurrió un error inesperado");
+    public ResponseEntity<?> handleUnexpected(Exception ex) {
+        return ResponseEntity.internalServerError().body(new ResponseGeneric<>("error", ex.getMessage(), null));
     }
 }

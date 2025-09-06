@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class UserMapper {
     public static User toDomainUser(UserEntity userEntity) {
+        System.out.println("UserMapper.toDomainUser" + userEntity.toString());
         Role role = RoleMapper.toDomainRole(userEntity.getRoleEntity());
         return new User(userEntity.getId(), userEntity.getName(), userEntity.getUsername(), userEntity.getLastname(), userEntity.getPassword(), role, userEntity.getCreatedAt(), new Date());
     }

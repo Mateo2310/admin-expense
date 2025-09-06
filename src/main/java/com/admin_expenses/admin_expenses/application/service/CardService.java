@@ -128,14 +128,7 @@ public class CardService implements ICardService {
             throw new CardNotFoundException(id);
         }
 
-        CardResponseDTO cardResponseDTO = new CardResponseDTO();
-        cardResponseDTO.setCardType(card.getCardType());
-        cardResponseDTO.setAlias(card.getAlias());
-        cardResponseDTO.setFinantialInstituteName(card.getFinantialInstitute().getName());
-        cardResponseDTO.setFinantialInstituteType(card.getFinantialInstitute().getType());
-        cardResponseDTO.setMessage("SUCCESS");
-        cardResponseDTO.setStatus("200");
-        return cardResponseDTO;
+        return mapperToCardResponseDTO(card);
     }
 
     @Override
@@ -155,15 +148,16 @@ public class CardService implements ICardService {
             return new ArrayList<>();
         }
 
-        return cardList.stream().map(card -> {
-            CardResponseDTO cardResponseDTO = new CardResponseDTO();
-            cardResponseDTO.setMessage("SUCCESS");
-            cardResponseDTO.setCardType(card.getCardType());
-            cardResponseDTO.setAlias(card.getAlias());
-            cardResponseDTO.setStatus("200");
-            cardResponseDTO.setFinantialInstituteName(card.getFinantialInstitute().getName());
-            cardResponseDTO.setFinantialInstituteType(card.getFinantialInstitute().getType());
-            return cardResponseDTO;
-        }).toList();
+        return cardList.stream().map(this::mapperToCardResponseDTO).toList();
+    }
+
+    private CardResponseDTO mapperToCardResponseDTO(Card card) {
+        CardResponseDTO cardResponseDTO = new CardResponseDTO();
+        cardResponseDTO.setId(card.getId());
+        cardResponseDTO.setCardType(card.getCardType());
+        cardResponseDTO.setAlias(card.getAlias());
+        cardResponseDTO.setFinantialInstituteName(card.getFinantialInstitute().getName());
+        cardResponseDTO.setFinantialInstituteType(card.getFinantialInstitute().getType());
+        return cardResponseDTO;
     }
 }

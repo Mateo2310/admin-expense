@@ -15,7 +15,6 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CardTierService implements ICardTierService {
@@ -42,11 +41,11 @@ public class CardTierService implements ICardTierService {
             cardTier.setCreatedBy(userFinded);
             this.cardTierRepository.save(cardTier);
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el nivel de tarjeta", e);
         }
 
         return "SUCCESS";
@@ -61,11 +60,11 @@ public class CardTierService implements ICardTierService {
             }
             this.deleteById(cardTier.getId());
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el nivel de tarjeta", e);
         }
 
         return "SUCCESS";
@@ -81,11 +80,11 @@ public class CardTierService implements ICardTierService {
 
             this.cardTierRepository.save(cardTier);
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el nivel de tarjeta", e);
         }
 
         return "SUCCESS";
@@ -107,15 +106,13 @@ public class CardTierService implements ICardTierService {
             CardTierResponseDTO cardTierResponseDTO = new CardTierResponseDTO();
             cardTierResponseDTO.setName(cardTier.getName());
             cardTierResponseDTO.setIcon(cardTier.getIcon());
-            cardTierResponseDTO.setMessage("SUCCESS");
-            cardTierResponseDTO.setStatus("200");
             return cardTierResponseDTO;
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
+            throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
+            throw new UnexpectedException("Error inesperado al guardar el nivel de tarjeta", e);
         }
     }
 
@@ -129,8 +126,6 @@ public class CardTierService implements ICardTierService {
             CardTierResponseDTO cardTierResponseDTO = new CardTierResponseDTO();
             cardTierResponseDTO.setName(cardTier.getName());
             cardTierResponseDTO.setIcon(cardTier.getIcon());
-            cardTierResponseDTO.setMessage("SUCCESS");
-            cardTierResponseDTO.setStatus("200");
             cardTierResponseDTO.setId(cardTier.getId());
             return cardTierResponseDTO;
         }).toList();

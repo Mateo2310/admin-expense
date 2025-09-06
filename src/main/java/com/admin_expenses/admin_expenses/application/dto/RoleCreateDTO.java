@@ -1,23 +1,18 @@
 package com.admin_expenses.admin_expenses.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleCreateDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @NotBlank(message = "El nombre es obligatorio")
     private String name;
-
-    public RoleCreateDTO() {
-    }
 }

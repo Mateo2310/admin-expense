@@ -1,9 +1,8 @@
 package com.admin_expenses.admin_expenses.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,16 +11,23 @@ import java.io.Serializable;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class CardRequestDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @NotNull(message = "El ID es obligatorio")
     private Long cardId;
-    private String cardType;
-    private String alias;
-    private Long userId;
-    private Long finantialInstituteId;
 
-    public CardRequestDTO() {
-    }
+    @NotBlank(message = "El tipo de tarjeta es obligatorio")
+    private String cardType;
+
+    @NotBlank(message = "El alias es obligatorio")
+    private String alias;
+
+    @NotNull(message = "El user id es obligatorio")
+    private Long userId;
+
+    @NotNull(message = "El id de la entidad financiera es obligatorio")
+    private Long finantialInstituteId;
 }
