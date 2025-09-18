@@ -1,8 +1,7 @@
 package com.admin_expenses.admin_expenses.infrastructure.controller;
 
 import com.admin_expenses.admin_expenses.application.dto.ResponseGeneric;
-import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
-import com.admin_expenses.admin_expenses.application.dto.UserDTO;
+import com.admin_expenses.admin_expenses.application.dto.UserResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +17,14 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
-        List<UserDTO> users = this.userService.findAll();
-        return ResponseEntity.ok(new ResponseGeneric<List<UserDTO>>("success", "Users", users){});
+        List<UserResponseDTO> users = this.userService.findAll();
+        return ResponseEntity.ok(new ResponseGeneric<List<UserResponseDTO>>("success", "Users", users){});
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
-        UserDTO userDTO = this.userService.findById(id);
-        return ResponseEntity.ok(new ResponseGeneric<UserDTO>("success", "User", userDTO){});
+        UserResponseDTO userResponseDTO = this.userService.findById(id);
+        return ResponseEntity.ok(new ResponseGeneric<UserResponseDTO>("success", "User", userResponseDTO){});
     }
 
     @DeleteMapping("/{id}")

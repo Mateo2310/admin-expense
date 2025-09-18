@@ -1,8 +1,8 @@
 package com.admin_expenses.admin_expenses.application.service;
 
-import com.admin_expenses.admin_expenses.application.dto.AuthenticationRequest;
 import com.admin_expenses.admin_expenses.application.dto.AuthenticationResponse;
 import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
+import com.admin_expenses.admin_expenses.application.dto.UserLoginDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IAuthenticationService;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import com.admin_expenses.admin_expenses.domain.exception.UserNotFoundException;
@@ -10,8 +10,6 @@ import com.admin_expenses.admin_expenses.domain.model.User;
 import com.admin_expenses.admin_expenses.infrastructure.security.JwtService;
 import com.admin_expenses.admin_expenses.infrastructure.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public AuthenticationResponse login(UserLoginDTO request) {
         this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );

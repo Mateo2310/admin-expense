@@ -1,7 +1,7 @@
 package com.admin_expenses.admin_expenses.application.service;
 
 import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
-import com.admin_expenses.admin_expenses.application.dto.UserDTO;
+import com.admin_expenses.admin_expenses.application.dto.UserResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.Role;
@@ -120,14 +120,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO findById(Long id) {
+    public UserResponseDTO findById(Long id) {
         try {
             // 1. Llamar al repositorio de Dominio para obtener
             User user = userRepository.findById(id);
             if (user == null) {
                 throw new UserNotFoundException(id);
             }
-            UserDTO responseDTO = new UserDTO();
+            UserResponseDTO responseDTO = new UserResponseDTO();
             responseDTO.setId(user.getId());
             responseDTO.setEmail(user.getUsername());
             responseDTO.setName(user.getName());
@@ -143,11 +143,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserDTO> findAll() {
+    public List<UserResponseDTO> findAll() {
         try {
             List<User> users = userRepository.findAll();
             return users.stream().map(user -> {
-                UserDTO dto = new UserDTO();
+                UserResponseDTO dto = new UserResponseDTO();
                 dto.setId(user.getId());
                 dto.setEmail(user.getUsername());
                 dto.setName(user.getName());
