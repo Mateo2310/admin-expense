@@ -4,7 +4,7 @@ import com.admin_expenses.admin_expenses.application.dto.RoleCreateDTO;
 import com.admin_expenses.admin_expenses.application.dto.RoleResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IRolesService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
-import com.admin_expenses.admin_expenses.domain.model.Role;
+import com.admin_expenses.admin_expenses.domain.model.RoleModel;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,8 @@ public class RoleService implements IRolesService {
     @Override
     public List<RoleResponseDTO> findAll() {
         try {
-            List<Role> roles = roleRepository.findAll();
-            return roles.stream().map(role ->  {
+            List<RoleModel> roleModels = roleRepository.findAll();
+            return roleModels.stream().map(role ->  {
                 RoleResponseDTO dto = new RoleResponseDTO();
                 dto.setName(role.getName());
                 return dto;
@@ -41,12 +41,10 @@ public class RoleService implements IRolesService {
 
     @Override
     public String create(RoleCreateDTO dto) {
-        Role newRole = new Role();
-        newRole.setName(dto.getName());
-        newRole.setCreatedAt(new Date());
-        newRole.setUpdatedAt(new Date());
+        RoleModel newRoleModel = new RoleModel();
+        newRoleModel.setName(dto.getName());
         try {
-            this.roleRepository.save(newRole);
+            this.roleRepository.save(newRoleModel);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el rol", e);
@@ -65,13 +63,12 @@ public class RoleService implements IRolesService {
     @Override
     public String update(RoleCreateDTO dto) {
         try {
-            Role role = this.roleRepository.findByName(dto.getName());
-            if (role == null) {
+            RoleModel roleModel = this.roleRepository.findByName(dto.getName());
+            if (roleModel == null) {
                 throw new RoleNotFoundException(dto.getName());
             }
-            role.setUpdatedAt(new Date());
-            role.setName(dto.getName());
-            this.roleRepository.save(role);
+            roleModel.setName(dto.getName());
+            this.roleRepository.save(roleModel);
             return "SUCESS";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el rol", e);
@@ -98,12 +95,12 @@ public class RoleService implements IRolesService {
     @Override
     public RoleResponseDTO findById(Long id) {
         try {
-            Role role = this.roleRepository.findById(id);
-            if (role == null) {
+            RoleModel roleModel = this.roleRepository.findById(id);
+            if (roleModel == null) {
                 throw new RoleNotFoundException(id);
             }
             RoleResponseDTO dto = new RoleResponseDTO();
-            dto.setName(role.getName());
+            dto.setName(roleModel.getName());
 
             return dto;
         } catch (DataIntegrityViolationException e) {

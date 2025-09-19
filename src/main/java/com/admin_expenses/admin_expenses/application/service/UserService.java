@@ -4,8 +4,8 @@ import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;
 import com.admin_expenses.admin_expenses.application.dto.UserResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
-import com.admin_expenses.admin_expenses.domain.model.Role;
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.RoleModel;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import com.admin_expenses.admin_expenses.infrastructure.security.JwtService;
@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,22 +33,20 @@ public class UserService implements IUserService {
     @Override
     public String create(UserCreateDTO creationDTO) {
         try {
-            Role role = this.roleRepository.findByName(creationDTO.getRoleName());
-            if (role == null) {
+            RoleModel roleModel = this.roleRepository.findByName(creationDTO.getRoleName());
+            if (roleModel == null) {
                 throw new RoleNotFoundException(creationDTO.getRoleName());
             }
-            User newUser = new User();
-            newUser.setName(creationDTO.getName());
-            newUser.setLastname(creationDTO.getLastname());
-            newUser.setUsername(creationDTO.getEmail());
-            newUser.setPassword(this.passwordEncoder.encode(creationDTO.getPassword()));
-            newUser.setRole(role);
-            newUser.setCreatedAt(new Date());
-            newUser.setUpdatedAt(new Date());
+            UserModel newUserModel = new UserModel();
+            newUserModel.setName(creationDTO.getName());
+            newUserModel.setLastname(creationDTO.getLastname());
+            newUserModel.setUsername(creationDTO.getEmail());
+            newUserModel.setPassword(this.passwordEncoder.encode(creationDTO.getPassword()));
+            newUserModel.setRoleModel(roleModel);
 
             // 3. Llamar al repositorio de Dominio para guardar
-            User userSaved = this.userRepository.save(newUser);
-            return this.jwtService.generateToken(new UserDetailsImpl(userSaved));
+            UserModel userModelSaved = this.userRepository.save(newUserModel);
+            return this.jwtService.generateToken(new UserDetailsImpl(userModelSaved));
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el usuario", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -63,11 +60,11 @@ public class UserService implements IUserService {
     @Override
     public String delete(String name) {
         try {
-            User userFinded = this.userRepository.findByUsername(name);
-            if (userFinded == null) {
+            UserModel userModelFinded = this.userRepository.findByUsername(name);
+            if (userModelFinded == null) {
                 throw new UserNotFoundException(name);
             }
-            this.userRepository.delete(userFinded);
+            this.userRepository.delete(userModelFinded);
             return "SUCESS";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el usuario", e);
@@ -81,20 +78,19 @@ public class UserService implements IUserService {
     @Override
     public String update(UserCreateDTO dto) {
         try {
-            User user = this.userRepository.findByUsername(dto.getName());
-            Role roleFinded = this.roleRepository.findByName(dto.getRoleName());
-            if (user == null) {
+            UserModel userModel = this.userRepository.findByUsername(dto.getName());
+            RoleModel roleModelFinded = this.roleRepository.findByName(dto.getRoleName());
+            if (userModel == null) {
                 throw new UserNotFoundException(dto.getName());
             }
-            if (roleFinded == null) {
+            if (roleModelFinded == null) {
                 throw new RoleNotFoundException(dto.getRoleName());
             }
-            user.setLastname(dto.getLastname());
-            user.setUsername(dto.getEmail());
-            user.setUpdatedAt(new Date());
-            user.setRole(roleFinded);
+            userModel.setLastname(dto.getLastname());
+            userModel.setUsername(dto.getEmail());
+            userModel.setRoleModel(roleModelFinded);
 
-            this.userRepository.update(user);
+            this.userRepository.update(userModel);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el usuario", e);
@@ -123,15 +119,15 @@ public class UserService implements IUserService {
     public UserResponseDTO findById(Long id) {
         try {
             // 1. Llamar al repositorio de Dominio para obtener
-            User user = userRepository.findById(id);
-            if (user == null) {
+            UserModel userModel = userRepository.findById(id);
+            if (userModel == null) {
                 throw new UserNotFoundException(id);
             }
             UserResponseDTO responseDTO = new UserResponseDTO();
-            responseDTO.setId(user.getId());
-            responseDTO.setEmail(user.getUsername());
-            responseDTO.setName(user.getName());
-            responseDTO.setLastName(user.getLastname());
+            responseDTO.setId(userModel.getId());
+            responseDTO.setEmail(userModel.getUsername());
+            responseDTO.setName(userModel.getName());
+            responseDTO.setLastName(userModel.getLastname());
             return responseDTO;
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el usuario", e);
@@ -145,14 +141,14 @@ public class UserService implements IUserService {
     @Override
     public List<UserResponseDTO> findAll() {
         try {
-            List<User> users = userRepository.findAll();
-            return users.stream().map(user -> {
+            List<UserModel> userModels = userRepository.findAll();
+            return userModels.stream().map(user -> {
                 UserResponseDTO dto = new UserResponseDTO();
                 dto.setId(user.getId());
                 dto.setEmail(user.getUsername());
                 dto.setName(user.getName());
                 dto.setLastName(user.getLastname());
-                dto.setRole(user.getRole().getName());
+                dto.setRole(user.getRoleModel().getName());
                 return dto;
             }).collect(Collectors.toList());
         } catch (DataIntegrityViolationException e) {
@@ -165,7 +161,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public UserModel findByUsername(String username) {
         return this.userRepository.findByUsername(username);
     }
 }

@@ -1,9 +1,9 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.repository.impl;
 
-import com.admin_expenses.admin_expenses.domain.model.CardTier;
+import com.admin_expenses.admin_expenses.domain.model.CardTierModel;
 import com.admin_expenses.admin_expenses.domain.repository.CardTierRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.CardTierEntity;
-import com.admin_expenses.admin_expenses.infrastructure.persistence.mapper.CardTierMapper;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.CardTierMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.ICardTierRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,20 +24,20 @@ public class CardTierRepositoryImpl implements CardTierRepository {
     }
 
     @Override
-    public CardTier findById(Long id) {
+    public CardTierModel findById(Long id) {
         return this.iCardTierRepository.findById(id).map(CardTierMapper::toDomainCardTier).orElse(null);
     }
 
     @Override
-    public CardTier save(CardTier cardTier) {
-        CardTierEntity cardTierEntity = CardTierMapper.toCardTierEntity(cardTier);
+    public CardTierModel save(CardTierModel cardTierModel) {
+        CardTierEntity cardTierEntity = CardTierMapper.toCardTierEntity(cardTierModel);
         CardTierEntity savedCardTierEntity = this.iCardTierRepository.save(cardTierEntity);
         return CardTierMapper.toDomainCardTier(savedCardTierEntity);
     }
 
     @Override
-    public CardTier update(CardTier cardTier) {
-        return CardTierMapper.toDomainCardTier(this.iCardTierRepository.save(CardTierMapper.toCardTierEntity(cardTier)));
+    public CardTierModel update(CardTierModel cardTierModel) {
+        return CardTierMapper.toDomainCardTier(this.iCardTierRepository.save(CardTierMapper.toCardTierEntity(cardTierModel)));
     }
 
     @Override
@@ -46,13 +46,13 @@ public class CardTierRepositoryImpl implements CardTierRepository {
     }
 
     @Override
-    public CardTier findByName(String name) {
+    public CardTierModel findByName(String name) {
         Optional<CardTierEntity> cardTierFinded = this.iCardTierRepository.findCardTierEntitieByName(name);
         return cardTierFinded.map(CardTierMapper::toDomainCardTier).orElse(null);
     }
 
     @Override
-    public List<CardTier> findAll() {
+    public List<CardTierModel> findAll() {
         return this.iCardTierRepository.findAll().stream().map(CardTierMapper::toDomainCardTier).collect(Collectors.toList());
     }
 }

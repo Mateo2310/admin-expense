@@ -1,14 +1,13 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.repository.impl;
 
-import com.admin_expenses.admin_expenses.domain.model.Card;
+import com.admin_expenses.admin_expenses.domain.model.CardModel;
 import com.admin_expenses.admin_expenses.domain.repository.CardRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.CardEntity;
-import com.admin_expenses.admin_expenses.infrastructure.persistence.mapper.CardMapper;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.CardMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.ICardRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -20,26 +19,26 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public Card findById(Long id) {
+    public CardModel findById(Long id) {
         return this.iCardRepository.findById(id)
                 .map(CardMapper::toDomainCard).orElse(null);
     }
 
     @Override
-    public Card save(Card card) {
-        CardEntity cardEntity = CardMapper.toCardEntity(card);
+    public CardModel save(CardModel cardModel) {
+        CardEntity cardEntity = CardMapper.toCardEntity(cardModel);
         CardEntity savedCardEntity = this.iCardRepository.save(cardEntity);
         return CardMapper.toDomainCard(savedCardEntity);
     }
 
     @Override
-    public Card update(Card card) {
-        return CardMapper.toDomainCard(this.iCardRepository.save(CardMapper.toCardEntity(card)));
+    public CardModel update(CardModel cardModel) {
+        return CardMapper.toDomainCard(this.iCardRepository.save(CardMapper.toCardEntity(cardModel)));
     }
 
     @Override
-    public void delete(Card card) {
-        this.iCardRepository.delete(CardMapper.toCardEntity(card));
+    public void delete(CardModel cardModel) {
+        this.iCardRepository.delete(CardMapper.toCardEntity(cardModel));
     }
 
     @Override
@@ -48,12 +47,12 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public List<Card> findAll() {
+    public List<CardModel> findAll() {
         return this.iCardRepository.findAll().stream().map(CardMapper::toDomainCard).collect(Collectors.toList());
     }
 
     @Override
-    public Card findByUserId(Long userId) {
+    public CardModel findByUserId(Long userId) {
         return null;
     }
 }

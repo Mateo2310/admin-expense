@@ -4,8 +4,8 @@ import com.admin_expenses.admin_expenses.application.dto.CardTierRequestDTO;
 import com.admin_expenses.admin_expenses.application.dto.CardTierResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.ICardTierService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
-import com.admin_expenses.admin_expenses.domain.model.CardTier;
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.CardTierModel;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.CardTierRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,17 +29,17 @@ public class CardTierService implements ICardTierService {
     @Override
     public String create(CardTierRequestDTO dto) {
         try {
-            User userFinded = this.userRepository.findById(dto.getUserId());
-            if (userFinded == null) {
+            UserModel userModelFinded = this.userRepository.findById(dto.getUserId());
+            if (userModelFinded == null) {
                 throw new UserNotFoundException(dto.getUserId());
             }
-            CardTier cardTier = new CardTier();
-            cardTier.setName(dto.getName());
-            cardTier.setIcon("/icon");
-            cardTier.setCreatedAt(new Date());
-            cardTier.setUpdatedAt(new Date());
-            cardTier.setCreatedBy(userFinded);
-            this.cardTierRepository.save(cardTier);
+            CardTierModel cardTierModel = new CardTierModel();
+            cardTierModel.setName(dto.getName());
+            cardTierModel.setIcon("/icon");
+            cardTierModel.setCreatedAt(new Date());
+            cardTierModel.setUpdatedAt(new Date());
+            cardTierModel.setCreatedBy(userModelFinded);
+            this.cardTierRepository.save(cardTierModel);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -54,11 +54,11 @@ public class CardTierService implements ICardTierService {
     @Override
     public String delete(String name) {
         try {
-            CardTier cardTier = this.cardTierRepository.findByName(name);
-            if (cardTier == null) {
+            CardTierModel cardTierModel = this.cardTierRepository.findByName(name);
+            if (cardTierModel == null) {
                 throw new CardTierNotFoundException(name);
             }
-            this.deleteById(cardTier.getId());
+            this.deleteById(cardTierModel.getId());
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -73,12 +73,12 @@ public class CardTierService implements ICardTierService {
     @Override
     public String update(CardTierRequestDTO dto) {
         try {
-            CardTier cardTier = this.cardTierRepository.findByName(dto.getName());
-            cardTier.setName(dto.getName());
-            cardTier.setIcon("/icon");
-            cardTier.setUpdatedAt(new Date());
+            CardTierModel cardTierModel = this.cardTierRepository.findByName(dto.getName());
+            cardTierModel.setName(dto.getName());
+            cardTierModel.setIcon("/icon");
+            cardTierModel.setUpdatedAt(new Date());
 
-            this.cardTierRepository.save(cardTier);
+            this.cardTierRepository.save(cardTierModel);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -99,13 +99,13 @@ public class CardTierService implements ICardTierService {
     @Override
     public CardTierResponseDTO findById(Long id) {
         try {
-            CardTier cardTier = this.cardTierRepository.findById(id);
-            if (cardTier == null) {
+            CardTierModel cardTierModel = this.cardTierRepository.findById(id);
+            if (cardTierModel == null) {
                 throw new CardTierNotFoundException(id);
             }
             CardTierResponseDTO cardTierResponseDTO = new CardTierResponseDTO();
-            cardTierResponseDTO.setName(cardTier.getName());
-            cardTierResponseDTO.setIcon(cardTier.getIcon());
+            cardTierResponseDTO.setName(cardTierModel.getName());
+            cardTierResponseDTO.setIcon(cardTierModel.getIcon());
             return cardTierResponseDTO;
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el nivel de tarjeta", e);
@@ -118,15 +118,15 @@ public class CardTierService implements ICardTierService {
 
     @Override
     public List<CardTierResponseDTO> findAll() {
-        List<CardTier> cardTiers = this.cardTierRepository.findAll();
-        if (cardTiers.isEmpty()) {
+        List<CardTierModel> cardTierModels = this.cardTierRepository.findAll();
+        if (cardTierModels.isEmpty()) {
             return new ArrayList<>();
         }
-        return cardTiers.stream().map(cardTier -> {
+        return cardTierModels.stream().map(cardTierModel -> {
             CardTierResponseDTO cardTierResponseDTO = new CardTierResponseDTO();
-            cardTierResponseDTO.setName(cardTier.getName());
-            cardTierResponseDTO.setIcon(cardTier.getIcon());
-            cardTierResponseDTO.setId(cardTier.getId());
+            cardTierResponseDTO.setName(cardTierModel.getName());
+            cardTierResponseDTO.setIcon(cardTierModel.getIcon());
+            cardTierResponseDTO.setId(cardTierModel.getId());
             return cardTierResponseDTO;
         }).toList();
     }

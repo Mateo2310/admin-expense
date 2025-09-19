@@ -6,7 +6,7 @@ import com.admin_expenses.admin_expenses.application.dto.UserLoginDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IAuthenticationService;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IUserService;
 import com.admin_expenses.admin_expenses.domain.exception.UserNotFoundException;
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.infrastructure.security.JwtService;
 import com.admin_expenses.admin_expenses.infrastructure.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +34,11 @@ public class AuthenticationService implements IAuthenticationService {
         this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        User user = this.userService.findByUsername(request.getUsername());
-        if (user == null){
+        UserModel userModel = this.userService.findByUsername(request.getUsername());
+        if (userModel == null){
             throw new UserNotFoundException(request.getUsername());
         }
-        String token = this.jwtService.generateToken(new UserDetailsImpl(user));
+        String token = this.jwtService.generateToken(new UserDetailsImpl(userModel));
         return AuthenticationResponse.builder()
                 .token(token)
                 .build();

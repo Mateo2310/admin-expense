@@ -1,14 +1,13 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.repository.impl;
 
-import com.admin_expenses.admin_expenses.domain.model.Role;
+import com.admin_expenses.admin_expenses.domain.model.RoleModel;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.RoleEntity;
-import com.admin_expenses.admin_expenses.infrastructure.persistence.mapper.RoleMapper;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.RoleMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IRoleRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -20,25 +19,25 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findById(Long id) {
+    public RoleModel findById(Long id) {
         return this.iRoleRepository.findById(id).map(RoleMapper::toDomainRole).orElse(null);
     }
 
     @Override
-    public Role save(Role role) {
-        RoleEntity roleEntity = RoleMapper.toRoleEntity(role);
+    public RoleModel save(RoleModel roleModel) {
+        RoleEntity roleEntity = RoleMapper.toRoleEntity(roleModel);
         RoleEntity roleEntitySaved = this.iRoleRepository.save(roleEntity);
         return RoleMapper.toDomainRole(roleEntitySaved);
     }
 
     @Override
-    public Role update(Role role) {
-        return RoleMapper.toDomainRole(this.iRoleRepository.save(RoleMapper.toRoleEntity(role)));
+    public RoleModel update(RoleModel roleModel) {
+        return RoleMapper.toDomainRole(this.iRoleRepository.save(RoleMapper.toRoleEntity(roleModel)));
     }
 
     @Override
-    public void delete(Role role) {
-        this.iRoleRepository.delete(RoleMapper.toRoleEntity(role));
+    public void delete(RoleModel roleModel) {
+        this.iRoleRepository.delete(RoleMapper.toRoleEntity(roleModel));
     }
 
     @Override
@@ -47,17 +46,17 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public List<Role> findAll() {
+    public List<RoleModel> findAll() {
         return this.iRoleRepository.findAll().stream().map(RoleMapper::toDomainRole).collect(Collectors.toList());
     }
 
     @Override
-    public Role findByUserId(Long userId) {
+    public RoleModel findByUserId(Long userId) {
         return null;
     }
 
     @Override
-    public Role findByName(String name) {
+    public RoleModel findByName(String name) {
         return this.iRoleRepository.findByName(name).map(RoleMapper::toDomainRole).orElse(null);
     }
 }

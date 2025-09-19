@@ -8,23 +8,19 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class UserModel {
     private Long id;
     private String name;
     private String username;
     private String lastname;
     private String password;
-    private Role role;
-    private Date createdAt;
-    private Date updatedAt;
+    private RoleModel roleModel;
 
-    public User(Long id, String name, String username, String lastname, Role role, Date createdAt, Date updatedAt) {
+    public UserModel(Long id, String name, String username, String lastname, RoleModel roleModel, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.lastname = lastname;
-        this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.roleModel = roleModel;
     }
 }

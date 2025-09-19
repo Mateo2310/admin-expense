@@ -1,6 +1,6 @@
 package com.admin_expenses.admin_expenses.infrastructure.config;
 
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import com.admin_expenses.admin_expenses.infrastructure.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> {
-            User user = this.userRepository.findByUsername(username);
-            if (user==null){
+            UserModel userModel = this.userRepository.findByUsername(username);
+            if (userModel ==null){
                 throw new UsernameNotFoundException("User not found");
             }
-            return new UserDetailsImpl(user);
+            return new UserDetailsImpl(userModel);
         };
     }
 

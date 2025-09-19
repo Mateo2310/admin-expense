@@ -1,16 +1,15 @@
 package com.admin_expenses.admin_expenses.domain.repository;
 
-import com.admin_expenses.admin_expenses.domain.model.Purchase;
+import com.admin_expenses.admin_expenses.domain.model.PurchaseModel;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PurchaseRepository {
-    Purchase findById(Long id);
-    Purchase save(Purchase purchase);
-    Purchase update(Purchase purchase);
-    void delete(Purchase purchase);
+    PurchaseModel findById(Long id);
+    PurchaseModel save(PurchaseModel purchaseModel);
+    PurchaseModel update(PurchaseModel purchaseModel);
+    void delete(PurchaseModel purchaseModel);
     void deleteById(Long id);
-    List<Purchase> findAll();
-    Purchase findByUserId(Long userId);
+    List<PurchaseModel> findAll();
+    PurchaseModel findByUserId(Long userId);
 }

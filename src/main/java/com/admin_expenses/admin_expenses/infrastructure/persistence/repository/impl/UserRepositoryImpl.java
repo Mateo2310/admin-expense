@@ -1,9 +1,9 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.repository.impl;
 
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.UserEntity;
-import com.admin_expenses.admin_expenses.infrastructure.persistence.mapper.UserMapper;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.UserMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IUserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,26 +19,26 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) {
+    public UserModel findById(Long id) {
         return this.iUserRepository.findById(id)
                 .map(UserMapper::toDomainUser).orElse(null);
     }
 
     @Override
-    public User save(User user) {
-        UserEntity userEntity = UserMapper.toUserEntity(user);
+    public UserModel save(UserModel userModel) {
+        UserEntity userEntity = UserMapper.toUserEntity(userModel);
         UserEntity userSaved = this.iUserRepository.save(userEntity);
         return UserMapper.toDomainUser(userSaved);
     }
 
     @Override
-    public User update(User user) {
-        return UserMapper.toDomainUser(this.iUserRepository.save(UserMapper.toUserEntity(user)));
+    public UserModel update(UserModel userModel) {
+        return UserMapper.toDomainUser(this.iUserRepository.save(UserMapper.toUserEntity(userModel)));
     }
 
     @Override
-    public void delete(User user) {
-        this.iUserRepository.delete(UserMapper.toUserEntity(user));
+    public void delete(UserModel userModel) {
+        this.iUserRepository.delete(UserMapper.toUserEntity(userModel));
     }
 
     @Override
@@ -47,12 +47,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserModel> findAll() {
         return this.iUserRepository.findAll().stream().map(UserMapper::toDomainUser).collect(Collectors.toList());
     }
 
     @Override
-    public User findByUsername(String username) {
+    public UserModel findByUsername(String username) {
         return this.iUserRepository.findByUsername(username)
                 .map(UserMapper::toDomainUser).orElse(null);
     }

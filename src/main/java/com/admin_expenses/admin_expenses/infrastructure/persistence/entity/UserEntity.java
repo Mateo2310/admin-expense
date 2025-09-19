@@ -3,13 +3,15 @@ package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users_expenses")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,37 +33,27 @@ public class UserEntity {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity roleEntity;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-    public UserEntity(Long id, String name, String username, String lastname, RoleEntity roleEntity, Date createdAt, Date updatedAt) {
+    public UserEntity(Long id, String name, String username, String lastname, String password, RoleEntity roleEntity) {
         this.id = id;
-        this.name = name;
-        this.username = username;
-        this.lastname = lastname;
-        this.roleEntity = roleEntity;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public UserEntity(String name, String username, String lastname, String password, RoleEntity roleEntity, Date createdAt, Date updatedAt) {
         this.name = name;
         this.username = username;
         this.lastname = lastname;
         this.password = password;
         this.roleEntity = roleEntity;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
-    public UserEntity() {
-
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private UserEntity createdBy;
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

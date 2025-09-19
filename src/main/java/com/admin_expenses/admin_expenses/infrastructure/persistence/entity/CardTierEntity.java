@@ -1,17 +1,16 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "card_tiers")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CardTierEntity {
 
     @Id
@@ -24,23 +23,29 @@ public class CardTierEntity {
     @Column(name = "icon")
     private String icon;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false) // Clave foránea en "usuarios"
     private UserEntity createdBy;
 
-    public CardTierEntity(String name, String icon, Date createdAt, Date updatedAt, UserEntity createdBy) {
+    public CardTierEntity(Long id, String name, String icon, UserEntity createdBy) {
+        this.id = id;
         this.name = name;
         this.icon = icon;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.createdBy = createdBy;
     }
 
-    public CardTierEntity() {}
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

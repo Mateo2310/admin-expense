@@ -1,17 +1,16 @@
 package com.admin_expenses.admin_expenses.domain.repository;
 
-import com.admin_expenses.admin_expenses.domain.model.Role;
+import com.admin_expenses.admin_expenses.domain.model.RoleModel;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RoleRepository {
-    Role findById(Long id);
-    Role save(Role role);
-    Role update(Role role);
-    void delete(Role role);
+    RoleModel findById(Long id);
+    RoleModel save(RoleModel roleModel);
+    RoleModel update(RoleModel roleModel);
+    void delete(RoleModel roleModel);
     void deleteById(Long id);
-    List<Role> findAll();
-    Role findByUserId(Long userId);
-    Role findByName(String name);
+    List<RoleModel> findAll();
+    RoleModel findByUserId(Long userId);
+    RoleModel findByName(String name);
 }

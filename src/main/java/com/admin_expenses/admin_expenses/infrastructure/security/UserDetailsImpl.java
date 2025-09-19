@@ -1,6 +1,6 @@
 package com.admin_expenses.admin_expenses.infrastructure.security;
 
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,22 +10,22 @@ import java.util.Collection;
 import java.util.List;
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-    private final User user;
+    private final UserModel userModel;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getRole().getName());
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userModel.getRoleModel().getName());
         return  List.of(grantedAuthority);
     }
 
     @Override
     public String getPassword() {
-        return this.user.getPassword();
+        return this.userModel.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.user.getUsername();
+        return this.userModel.getUsername();
     }
 
     @Override

@@ -1,17 +1,16 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "cards")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CardEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,26 +26,30 @@ public class CardEntity {
     @Column(name = "alias")
     private String alias;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity createdBy;
 
-    public CardEntity(String cardType, FinantialInstituteEntity finantialInstituteEntity, String alias, Date createdAt, Date updatedAt, UserEntity createdBy) {
+    public CardEntity(Long id, String cardType, FinantialInstituteEntity finantialInstituteEntity, String alias, UserEntity createdBy) {
+        this.id = id;
         this.cardType = cardType;
         this.finantialInstituteEntity = finantialInstituteEntity;
         this.alias = alias;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.createdBy = createdBy;
     }
 
-    public CardEntity() {
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

@@ -1,17 +1,15 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "purchases")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PurchaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +21,8 @@ public class PurchaseEntity {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "cost_total")
-    private Double costTotal;
+    @Column(name = "installment_amount")
+    private Double installmentAmount;
 
     @Column(name = "purchase_type")
     private String purchaseType;
@@ -36,27 +34,33 @@ public class PurchaseEntity {
     @JoinColumn(name = "card_id", nullable = false)
     private CardEntity card;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity createdBy;
 
-    public PurchaseEntity(String productName, Integer quantity, Double costTotal, String purchaseType, Integer fees, CardEntity card, Date createdAt, Date updatedAt, UserEntity createdBy) {
+    public PurchaseEntity(Long id, String productName, Integer quantity, Double installmentAmount, String purchaseType, Integer fees, CardEntity card, UserEntity createdBy) {
+        this.id = id;
         this.productName = productName;
         this.quantity = quantity;
-        this.costTotal = costTotal;
+        this.installmentAmount = installmentAmount;
         this.purchaseType = purchaseType;
         this.fees = fees;
         this.card = card;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.createdBy = createdBy;
     }
 
-    public PurchaseEntity() {}
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

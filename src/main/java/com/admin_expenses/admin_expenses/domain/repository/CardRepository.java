@@ -1,16 +1,15 @@
 package com.admin_expenses.admin_expenses.domain.repository;
 
-import com.admin_expenses.admin_expenses.domain.model.Card;
+import com.admin_expenses.admin_expenses.domain.model.CardModel;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CardRepository {
-    Card findById(Long id);
-    Card save(Card card);
-    Card update(Card card);
-    void delete(Card card);
+    CardModel findById(Long id);
+    CardModel save(CardModel cardModel);
+    CardModel update(CardModel cardModel);
+    void delete(CardModel cardModel);
     void deleteById(Long id);
-    List<Card> findAll();
-    Card findByUserId(Long userId);
+    List<CardModel> findAll();
+    CardModel findByUserId(Long userId);
 }

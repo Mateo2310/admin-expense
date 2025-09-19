@@ -1,9 +1,9 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.repository.impl;
 
-import com.admin_expenses.admin_expenses.domain.model.Purchase;
+import com.admin_expenses.admin_expenses.domain.model.PurchaseModel;
 import com.admin_expenses.admin_expenses.domain.repository.PurchaseRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.PurchaseEntity;
-import com.admin_expenses.admin_expenses.infrastructure.persistence.mapper.PurchaseMapper;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.PurchaseMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IPurchaseRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,26 +19,26 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public Purchase findById(Long id) {
+    public PurchaseModel findById(Long id) {
         return this.iPurchaseRepository.findById(id)
-                .map(PurchaseMapper::toDomainPurchase).orElse(null);
+                .map(PurchaseMapper::toModelPurchase).orElse(null);
     }
 
     @Override
-    public Purchase save(Purchase purchase) {
-        PurchaseEntity purchaseEntity = PurchaseMapper.toDomainPurchase(purchase);
+    public PurchaseModel save(PurchaseModel purchaseModel) {
+        PurchaseEntity purchaseEntity = PurchaseMapper.toEntityPurchase(purchaseModel);
         PurchaseEntity savedEntity = this.iPurchaseRepository.save(purchaseEntity);
-        return PurchaseMapper.toDomainPurchase(savedEntity);
+        return PurchaseMapper.toModelPurchase(savedEntity);
     }
 
     @Override
-    public Purchase update(Purchase purchase) {
-        return PurchaseMapper.toDomainPurchase(this.iPurchaseRepository.save(PurchaseMapper.toDomainPurchase(purchase)));
+    public PurchaseModel update(PurchaseModel purchaseModel) {
+        return PurchaseMapper.toModelPurchase(this.iPurchaseRepository.save(PurchaseMapper.toEntityPurchase(purchaseModel)));
     }
 
     @Override
-    public void delete(Purchase purchase) {
-        this.iPurchaseRepository.delete(PurchaseMapper.toDomainPurchase(purchase));
+    public void delete(PurchaseModel purchaseModel) {
+        this.iPurchaseRepository.delete(PurchaseMapper.toEntityPurchase(purchaseModel));
     }
 
     @Override
@@ -47,13 +47,13 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public List<Purchase> findAll() {
+    public List<PurchaseModel> findAll() {
         return this.iPurchaseRepository.findAll()
-                .stream().map(PurchaseMapper::toDomainPurchase).collect(Collectors.toList());
+                .stream().map(PurchaseMapper::toModelPurchase).collect(Collectors.toList());
     }
 
     @Override
-    public Purchase findByUserId(Long userId) {
+    public PurchaseModel findByUserId(Long userId) {
         return null;
     }
 }

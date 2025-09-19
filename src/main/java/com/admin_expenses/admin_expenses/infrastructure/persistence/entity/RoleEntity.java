@@ -1,19 +1,17 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,21 +23,23 @@ public class RoleEntity {
     @OneToMany(mappedBy = "roleEntity") // No genera una columna, solo referencia
     private List<UserEntity> users;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-    public RoleEntity(Long id, String name, Date createdAt, Date updatedAt) {
+    public RoleEntity(Long id, String name, Date updatedAt) {
         this.id = id;
         this.name = name;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
-    public RoleEntity() {}
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
-    //    @Column(name = "created_by")
-//    private UserEntity createdBy;
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -11,7 +11,7 @@ public class PurchaseResponseDTO {
     private Long id;
     private String productName;
     private Integer quantity;
-    private Double costTotal;
+    private Double installmentAmount;
     private String purchaseType;
     private Integer fees;
     private CardResponseDTO card;

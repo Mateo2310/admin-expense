@@ -4,10 +4,9 @@ import com.admin_expenses.admin_expenses.application.dto.FinantialInstituteRespo
 import com.admin_expenses.admin_expenses.application.dto.FinantialInstituteRequestDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IFinantialInstituteService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
-import com.admin_expenses.admin_expenses.domain.model.FinantialInstitute;
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.FinantialInstituteModel;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.FinantialInstituteRepository;
-import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,19 +25,17 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
     public String create(FinantialInstituteRequestDTO finantialInstituteRequest) {
        try {
-           User user = this.userRepository.findByUsername(finantialInstituteRequest.getUsernameCreatedBy());
-           if (user == null) {
+           UserModel userModel = this.userRepository.findByUsername(finantialInstituteRequest.getUsernameCreatedBy());
+           if (userModel == null) {
                throw new UserNotFoundException(finantialInstituteRequest.getUsernameCreatedBy());
            }
 
-           FinantialInstitute newFinantialInstitute = new FinantialInstitute();
-           newFinantialInstitute.setName(finantialInstituteRequest.getName());
-           newFinantialInstitute.setType(finantialInstituteRequest.getType());
-           newFinantialInstitute.setCreatedAt(new Date());
-           newFinantialInstitute.setUpdatedAt(new Date());
-           newFinantialInstitute.setCreatedBy(user);
+           FinantialInstituteModel newFinantialInstituteModel = new FinantialInstituteModel();
+           newFinantialInstituteModel.setName(finantialInstituteRequest.getName());
+           newFinantialInstituteModel.setType(finantialInstituteRequest.getType());
+           newFinantialInstituteModel.setCreatedBy(userModel);
 
-           this.finantialInstituteRepository.save(newFinantialInstitute);
+           this.finantialInstituteRepository.save(newFinantialInstituteModel);
 
            return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
@@ -53,20 +50,19 @@ public class FinantialInstituteService implements IFinantialInstituteService {
     @Override
     public String update(FinantialInstituteRequestDTO dto) {
         try {
-            User userFinded = this.userRepository.findByUsername(dto.getUsernameCreatedBy());
-            FinantialInstitute finantialInstituteToSave = this.finantialInstituteRepository.findByName(dto.getName());
-            if (userFinded == null) {
+            UserModel userModelFinded = this.userRepository.findByUsername(dto.getUsernameCreatedBy());
+            FinantialInstituteModel finantialInstituteModelToSave = this.finantialInstituteRepository.findByName(dto.getName());
+            if (userModelFinded == null) {
                 throw new UserNotFoundException(dto.getUsernameCreatedBy());
             }
 
-            if (finantialInstituteToSave == null) {
+            if (finantialInstituteModelToSave == null) {
                 throw new FinantialInstituteNotFoundException(dto.getName());
             }
 
-            finantialInstituteToSave.setName(dto.getName());
-            finantialInstituteToSave.setType(dto.getType());
-            finantialInstituteToSave.setUpdatedAt(new Date());
-            this.finantialInstituteRepository.update(finantialInstituteToSave);
+            finantialInstituteModelToSave.setName(dto.getName());
+            finantialInstituteModelToSave.setType(dto.getType());
+            this.finantialInstituteRepository.update(finantialInstituteModelToSave);
 
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
@@ -95,10 +91,10 @@ public class FinantialInstituteService implements IFinantialInstituteService {
     @Override
     public FinantialInstituteResponseDTO findById(Long id) {
         try {
-            FinantialInstitute finantialInstitute = this.finantialInstituteRepository.findById(id);
+            FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findById(id);
             FinantialInstituteResponseDTO finantialInstituteResponseDTO = new FinantialInstituteResponseDTO();
-            finantialInstituteResponseDTO.setName(finantialInstitute.getName());
-            finantialInstituteResponseDTO.setType(finantialInstitute.getType());
+            finantialInstituteResponseDTO.setName(finantialInstituteModel.getName());
+            finantialInstituteResponseDTO.setType(finantialInstituteModel.getType());
             return finantialInstituteResponseDTO;
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);
@@ -111,10 +107,10 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
     public List<FinantialInstituteResponseDTO> findAll(){
         try {
-            List<FinantialInstitute> finantialInstituteList = this.finantialInstituteRepository.findAll();
+            List<FinantialInstituteModel> finantialInstituteModelList = this.finantialInstituteRepository.findAll();
             List<FinantialInstituteResponseDTO>  finantialInstituteResponseDTOList = new ArrayList<>();
 
-            finantialInstituteList.forEach(finantialInstitute -> {
+            finantialInstituteModelList.forEach(finantialInstitute -> {
                 FinantialInstituteResponseDTO finantialInstituteResponseDTO = new FinantialInstituteResponseDTO();
                 finantialInstituteResponseDTO.setName(finantialInstitute.getName());
                 finantialInstituteResponseDTO.setType(finantialInstitute.getType());
@@ -133,11 +129,11 @@ public class FinantialInstituteService implements IFinantialInstituteService {
 
     public String delete(String name) {
         try {
-            FinantialInstitute finantialInstitute = this.finantialInstituteRepository.findByName(name);
-            if (finantialInstitute == null) {
+            FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findByName(name);
+            if (finantialInstituteModel == null) {
                 throw new FinantialInstituteNotFoundException(name);
             }
-            this.finantialInstituteRepository.delete(finantialInstitute);
+            this.finantialInstituteRepository.delete(finantialInstituteModel);
             return "DELETED";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar la entidad financiera", e);

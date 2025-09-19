@@ -23,8 +23,8 @@ public class PurchaseRequestDTO implements Serializable {
     @NotNull(message = "La cantidad es obligatoria")
     private Integer quantity;
 
-    @NotNull(message = "El costo total es obligatoria")
-    private Double costTotal;
+    @NotNull(message = "El monto de la cuota es obligatoria")
+    private Double installmentAmount;
 
     @NotBlank(message = "El tipo de gasto es obligatorio")
     private String purchaseType;

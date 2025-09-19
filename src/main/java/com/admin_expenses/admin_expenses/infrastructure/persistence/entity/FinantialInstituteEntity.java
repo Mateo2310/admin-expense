@@ -1,17 +1,16 @@
 package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "finantial_institutes")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FinantialInstituteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,23 +22,29 @@ public class FinantialInstituteEntity {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity createdBy;
 
-    public FinantialInstituteEntity(String name, String type, Date createdAt, Date updatedAt, UserEntity createdBy) {
+    public FinantialInstituteEntity(Long id, String name, String type, UserEntity createdBy) {
+        this.id = id;
         this.name = name;
         this.type = type;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.createdBy = createdBy;
     }
 
-    public FinantialInstituteEntity() {}
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

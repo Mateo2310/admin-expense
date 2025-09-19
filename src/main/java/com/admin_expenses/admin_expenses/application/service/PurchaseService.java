@@ -1,58 +1,44 @@
 package com.admin_expenses.admin_expenses.application.service;
 
-import com.admin_expenses.admin_expenses.application.dto.CardResponseDTO;
 import com.admin_expenses.admin_expenses.application.dto.PurchaseRequestDTO;
 import com.admin_expenses.admin_expenses.application.dto.PurchaseResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.IPurchaseService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
-import com.admin_expenses.admin_expenses.domain.model.Card;
-import com.admin_expenses.admin_expenses.domain.model.Purchase;
-import com.admin_expenses.admin_expenses.domain.model.User;
+import com.admin_expenses.admin_expenses.domain.model.CardModel;
+import com.admin_expenses.admin_expenses.domain.model.PurchaseModel;
+import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.CardRepository;
 import com.admin_expenses.admin_expenses.domain.repository.PurchaseRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.PurchaseMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseService implements IPurchaseService {
     private final UserRepository userRepository;
     private final PurchaseRepository purchaseRepository;
     private final CardRepository cardRepository;
 
-    public PurchaseService(UserRepository userRepository, PurchaseRepository purchaseRepository, CardRepository cardRepository) {
-        this.userRepository = userRepository;
-        this.purchaseRepository = purchaseRepository;
-        this.cardRepository = cardRepository;
-    }
-
     @Override
     public String create(PurchaseRequestDTO dto) {
         try {
-            User userFinded = userRepository.findById(dto.getUserId());
-            Card cardFinded = cardRepository.findById(dto.getCardId());
-            if (userFinded == null) {
+            UserModel userModelFinded = this.userRepository.findById(dto.getUserId());
+            CardModel cardModelFinded = this.cardRepository.findById(dto.getCardId());
+            if (userModelFinded == null) {
                 throw new UserNotFoundException(dto.getUserId());
             }
-            if (cardFinded == null) {
+            if (cardModelFinded == null) {
                 throw new CardNotFoundException(dto.getCardId());
             }
-            Purchase purchase = new Purchase();
-            purchase.setCard(cardFinded);
-            purchase.setProductName(dto.getProductName());
-            purchase.setQuantity(dto.getQuantity());
-            purchase.setCostTotal(dto.getCostTotal());
-            purchase.setPurchaseType(dto.getPurchaseType());
-            purchase.setFees(dto.getFees());
-            purchase.setCreatedAt(new Date());
-            purchase.setUpdatedAt(new Date());
-            purchase.setCreatedBy(userFinded);
-            this.purchaseRepository.save(purchase);
+            PurchaseModel purchaseModel = PurchaseMapper.fromRequestDtoToModelPurchase(dto, userModelFinded, cardModelFinded);
+            purchaseModel.validate();
+            this.purchaseRepository.save(purchaseModel);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -71,14 +57,13 @@ public class PurchaseService implements IPurchaseService {
     @Override
     public String update(PurchaseRequestDTO dto) {
         try {
-            Purchase purchase = this.purchaseRepository.findById(dto.getId());
-            purchase.setProductName(dto.getProductName());
-            purchase.setQuantity(dto.getQuantity());
-            purchase.setCostTotal(dto.getCostTotal());
-            purchase.setPurchaseType(dto.getPurchaseType());
-            purchase.setFees(dto.getFees());
-            purchase.setUpdatedAt(new Date());
-            this.purchaseRepository.update(purchase);
+            PurchaseModel purchaseModel = this.purchaseRepository.findById(dto.getId());
+            purchaseModel.setProductName(dto.getProductName());
+            purchaseModel.setQuantity(dto.getQuantity());
+            purchaseModel.setInstallmentAmount(dto.getInstallmentAmount());
+            purchaseModel.setPurchaseType(dto.getPurchaseType());
+            purchaseModel.setFees(dto.getFees());
+            this.purchaseRepository.update(purchaseModel);
             return "SUCCESS";
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el gasto", e);
@@ -106,8 +91,8 @@ public class PurchaseService implements IPurchaseService {
     @Override
     public PurchaseResponseDTO findById(Long id) {
         try {
-            Purchase purchase = this.purchaseRepository.findById(id);
-            return getPurchaseResponseDTO(purchase);
+            PurchaseModel purchaseModel = this.purchaseRepository.findById(id);
+            return PurchaseMapper.getPurchaseResponseDTO(purchaseModel);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -117,26 +102,11 @@ public class PurchaseService implements IPurchaseService {
         }
     }
 
-    private static PurchaseResponseDTO getPurchaseResponseDTO(Purchase purchase) {
-        PurchaseResponseDTO purchaseResponseDTO = new PurchaseResponseDTO();
-        CardResponseDTO cardResponseDTO = new CardResponseDTO();
-        purchaseResponseDTO.setPurchaseType(purchase.getPurchaseType());
-        purchaseResponseDTO.setFees(purchase.getFees());
-        purchaseResponseDTO.setId(purchase.getId());
-        purchaseResponseDTO.setProductName(purchase.getProductName());
-        purchaseResponseDTO.setQuantity(purchase.getQuantity());
-        purchaseResponseDTO.setCostTotal(purchase.getCostTotal());
-        cardResponseDTO.setCardType(purchase.getCard().getCardType());
-        cardResponseDTO.setCardType(purchase.getCard().getCardType());
-        purchaseResponseDTO.setCard(cardResponseDTO);
-        return purchaseResponseDTO;
-    }
-
     @Override
     public List<PurchaseResponseDTO> findAll() {
         try {
-            List<Purchase> purchaseList = this.purchaseRepository.findAll();
-            return purchaseList.stream().map(PurchaseService::getPurchaseResponseDTO).toList();
+            List<PurchaseModel> purchaseModelList = this.purchaseRepository.findAll();
+            return purchaseModelList.stream().map(PurchaseMapper::getPurchaseResponseDTO).toList();
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar el gasto", e);
         } catch (CannotCreateTransactionException cctex) {
