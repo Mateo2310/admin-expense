@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 
 @Data
@@ -12,5 +13,5 @@ import java.time.YearMonth;
 public class MonthlyCardExpense {
     private CardModel cardModel;
     private YearMonth yearMonth;
-    private Double total;
+    private BigDecimal total;
 }

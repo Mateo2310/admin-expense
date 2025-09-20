@@ -3,6 +3,7 @@ package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class PurchaseEntity {
     private Integer quantity;
 
     @Column(name = "installment_amount")
-    private Double installmentAmount;
+    private BigDecimal installmentAmount;
 
     @Column(name = "purchase_type")
     private String purchaseType;
