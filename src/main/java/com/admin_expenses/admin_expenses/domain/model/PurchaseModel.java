@@ -3,7 +3,10 @@ package com.admin_expenses.admin_expenses.domain.model;
 import com.admin_expenses.admin_expenses.domain.exception.BusinessException;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class PurchaseModel {
@@ -15,6 +18,7 @@ public class PurchaseModel {
     private Integer fees;
     private CardModel cardModel;
     private UserModel createdBy;
+    private LocalDate purchaseDate;
 
     public void validate() {
         if (quantity <= 0) {

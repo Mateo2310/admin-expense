@@ -3,6 +3,7 @@ package com.admin_expenses.admin_expenses.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,6 +31,9 @@ public class PurchaseEntity {
     @Column(name = "fees")
     private Integer fees;
 
+    @Column(name = "purchase_date")
+    private LocalDate purchaseDate;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "card_id", nullable = false)
     private CardEntity card;
@@ -42,7 +46,7 @@ public class PurchaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity createdBy;
 
-    public PurchaseEntity(Long id, String productName, Integer quantity, Double installmentAmount, String purchaseType, Integer fees, CardEntity card, UserEntity createdBy) {
+    public PurchaseEntity(Long id, String productName, Integer quantity, Double installmentAmount, String purchaseType, Integer fees, CardEntity card, UserEntity createdBy, LocalDate purchaseDate) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
@@ -51,6 +55,7 @@ public class PurchaseEntity {
         this.fees = fees;
         this.card = card;
         this.createdBy = createdBy;
+        this.purchaseDate = purchaseDate;
     }
 
     @PrePersist

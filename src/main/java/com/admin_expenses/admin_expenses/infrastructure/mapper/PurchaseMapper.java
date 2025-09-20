@@ -14,14 +14,14 @@ public class PurchaseMapper {
     public static PurchaseModel toModelPurchase(PurchaseEntity purchaseEntity) {
         UserModel userModel = UserMapper.toDomainUser(purchaseEntity.getCreatedBy());
         CardModel cardModel = CardMapper.toDomainCard(purchaseEntity.getCard());
-        return new PurchaseModel(purchaseEntity.getId(), purchaseEntity.getProductName(), purchaseEntity.getQuantity(), purchaseEntity.getInstallmentAmount(), purchaseEntity.getPurchaseType(), purchaseEntity.getFees(), cardModel, userModel);
+        return new PurchaseModel(purchaseEntity.getId(), purchaseEntity.getProductName(), purchaseEntity.getQuantity(), purchaseEntity.getInstallmentAmount(), purchaseEntity.getPurchaseType(), purchaseEntity.getFees(), cardModel, userModel, purchaseEntity.getPurchaseDate());
     }
 
     public static PurchaseEntity toEntityPurchase(PurchaseModel purchaseModel) {
         CardEntity cardEntity = CardMapper.toCardEntity(purchaseModel.getCardModel());
         UserEntity userEntity = UserMapper.toUserEntity(purchaseModel.getCreatedBy());
 
-        return new PurchaseEntity(purchaseModel.getId(), purchaseModel.getProductName(), purchaseModel.getQuantity(), purchaseModel.getInstallmentAmount(), purchaseModel.getPurchaseType(), purchaseModel.getFees(), cardEntity, userEntity);
+        return new PurchaseEntity(purchaseModel.getId(), purchaseModel.getProductName(), purchaseModel.getQuantity(), purchaseModel.getInstallmentAmount(), purchaseModel.getPurchaseType(), purchaseModel.getFees(), cardEntity, userEntity, purchaseModel.getPurchaseDate());
     }
 
     public static PurchaseModel fromRequestDtoToModelPurchase(PurchaseRequestDTO dto, UserModel userModel, CardModel cardModel) {
@@ -45,8 +45,7 @@ public class PurchaseMapper {
         purchaseResponseDTO.setProductName(purchaseModel.getProductName());
         purchaseResponseDTO.setQuantity(purchaseModel.getQuantity());
         purchaseResponseDTO.setInstallmentAmount(purchaseModel.getInstallmentAmount());
-        cardResponseDTO.setCardType(purchaseModel.getCardModel().getCardType());
-        cardResponseDTO.setCardType(purchaseModel.getCardModel().getCardType());
+        cardResponseDTO.setCardType(purchaseModel.getCardModel().getCardType().name());
         purchaseResponseDTO.setCard(cardResponseDTO);
         return purchaseResponseDTO;
     }

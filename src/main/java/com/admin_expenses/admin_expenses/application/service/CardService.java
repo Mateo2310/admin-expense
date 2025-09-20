@@ -5,30 +5,27 @@ import com.admin_expenses.admin_expenses.application.dto.CardResponseDTO;
 import com.admin_expenses.admin_expenses.application.service.interfaces.ICardService;
 import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.CardModel;
+import com.admin_expenses.admin_expenses.domain.model.CardType;
 import com.admin_expenses.admin_expenses.domain.model.FinantialInstituteModel;
 import com.admin_expenses.admin_expenses.domain.model.UserModel;
 import com.admin_expenses.admin_expenses.domain.repository.CardRepository;
 import com.admin_expenses.admin_expenses.domain.repository.FinantialInstituteRepository;
 import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
+import com.admin_expenses.admin_expenses.infrastructure.mapper.CardMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CardService implements ICardService {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
     private final FinantialInstituteRepository finantialInstituteRepository;
-
-    public CardService(CardRepository cardRepository, UserRepository userRepository, FinantialInstituteRepository finantialInstituteRepository) {
-        this.cardRepository = cardRepository;
-        this.userRepository = userRepository;
-        this.finantialInstituteRepository = finantialInstituteRepository;
-    }
 
     @Override
     public String create(CardRequestDTO dto) {
@@ -40,9 +37,11 @@ public class CardService implements ICardService {
         if (userModelEntity == null) {
             throw new UserNotFoundException(dto.getUserId());
         }
+
+        CardType cardType = this.getCardType(dto.getCardType());
         CardModel cardModel = new CardModel();
         cardModel.setAlias(dto.getAlias());
-        cardModel.setCardType(dto.getCardType());
+        cardModel.setCardType(cardType);
         cardModel.setFinantialInstituteModel(finantialInstituteModel);
         cardModel.setCreatedBy(userModelEntity);
 
@@ -66,15 +65,14 @@ public class CardService implements ICardService {
     public String update(CardRequestDTO dto) {
         CardModel cardModelFindedOpt = this.cardRepository.findById(dto.getCardId());
         FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findById(dto.getFinantialInstituteId());
-        if (finantialInstituteModel == null) {
-            throw new FinantialInstituteNotFoundException(dto.getFinantialInstituteId());
-        }
-        if (cardModelFindedOpt == null) {
-            throw new CardNotFoundException(dto.getCardId());
-        }
+
+        if (finantialInstituteModel == null) throw new FinantialInstituteNotFoundException(dto.getFinantialInstituteId());
+        if (cardModelFindedOpt == null) throw new CardNotFoundException(dto.getCardId());
+
+        CardType cardType = this.getCardType(dto.getCardType());
 
         cardModelFindedOpt.setFinantialInstituteModel(finantialInstituteModel);
-        cardModelFindedOpt.setCardType(dto.getCardType());
+        cardModelFindedOpt.setCardType(cardType);
         cardModelFindedOpt.setAlias(dto.getAlias());
 
         try {
@@ -125,7 +123,7 @@ public class CardService implements ICardService {
             throw new CardNotFoundException(id);
         }
 
-        return mapperToCardResponseDTO(cardModel);
+        return CardMapper.mapperToCardResponseDTO(cardModel);
     }
 
     @Override
@@ -145,16 +143,14 @@ public class CardService implements ICardService {
             return new ArrayList<>();
         }
 
-        return cardModelList.stream().map(this::mapperToCardResponseDTO).toList();
+        return cardModelList.stream().map(CardMapper::mapperToCardResponseDTO).toList();
     }
 
-    private CardResponseDTO mapperToCardResponseDTO(CardModel cardModel) {
-        CardResponseDTO cardResponseDTO = new CardResponseDTO();
-        cardResponseDTO.setId(cardModel.getId());
-        cardResponseDTO.setCardType(cardModel.getCardType());
-        cardResponseDTO.setAlias(cardModel.getAlias());
-        cardResponseDTO.setFinantialInstituteName(cardModel.getFinantialInstituteModel().getName());
-        cardResponseDTO.setFinantialInstituteType(cardModel.getFinantialInstituteModel().getType());
-        return cardResponseDTO;
+    private CardType getCardType(String cardType) {
+        try {
+            return CardType.valueOf(cardType);
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException("Tipo de tarjeta no valido: " + cardType);
+        }
     }
 }
