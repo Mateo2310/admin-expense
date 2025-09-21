@@ -6,20 +6,17 @@ import com.admin_expenses.admin_expenses.application.service.interfaces.IRolesSe
 import com.admin_expenses.admin_expenses.domain.exception.*;
 import com.admin_expenses.admin_expenses.domain.model.RoleModel;
 import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RoleService implements IRolesService {
     private final RoleRepository roleRepository;
-
-    public RoleService(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
 
     @Override
     public List<RoleResponseDTO> findAll() {
@@ -56,29 +53,6 @@ public class RoleService implements IRolesService {
     }
 
     @Override
-    public String delete(String name) {
-        return null;
-    }
-
-    @Override
-    public String update(RoleCreateDTO dto) {
-        try {
-            RoleModel roleModel = this.roleRepository.findByName(dto.getName());
-            if (roleModel == null) {
-                throw new RoleNotFoundException(dto.getName());
-            }
-            roleModel.setName(dto.getName());
-            this.roleRepository.save(roleModel);
-            return "SUCESS";
-        } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar el rol", e);
-        } catch (CannotCreateTransactionException cctex) {
-            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
-        } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar el rol", e);
-        }
-    }
-
     public String deleteById(Long id) {
         try {
             this.roleRepository.deleteById(id);

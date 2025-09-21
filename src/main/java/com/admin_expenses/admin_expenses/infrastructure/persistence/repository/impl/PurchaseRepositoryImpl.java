@@ -5,22 +5,20 @@ import com.admin_expenses.admin_expenses.domain.repository.PurchaseRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.PurchaseEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.PurchaseMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IPurchaseRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class PurchaseRepositoryImpl implements PurchaseRepository {
     private final IPurchaseRepository iPurchaseRepository;
 
-    public PurchaseRepositoryImpl(IPurchaseRepository iPurchaseRepository) {
-        this.iPurchaseRepository = iPurchaseRepository;
-    }
-
     @Override
-    public PurchaseModel findById(Long id) {
-        return this.iPurchaseRepository.findById(id)
+    public PurchaseModel findById(Long id, Long userId) {
+        return this.iPurchaseRepository.findByIdAndUserId(id, userId)
                 .map(PurchaseMapper::toModelPurchase).orElse(null);
     }
 
@@ -32,28 +30,13 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public PurchaseModel update(PurchaseModel purchaseModel) {
-        return PurchaseMapper.toModelPurchase(this.iPurchaseRepository.save(PurchaseMapper.toEntityPurchase(purchaseModel)));
+    public void deleteById(Long id, Long userId) {
+        this.iPurchaseRepository.deleteByIdAndUserId(id, userId);
     }
 
     @Override
-    public void delete(PurchaseModel purchaseModel) {
-        this.iPurchaseRepository.delete(PurchaseMapper.toEntityPurchase(purchaseModel));
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        this.iPurchaseRepository.deleteById(id);
-    }
-
-    @Override
-    public List<PurchaseModel> findAll() {
-        return this.iPurchaseRepository.findAll()
+    public List<PurchaseModel> findAll(Long userId) {
+        return this.iPurchaseRepository.findAllByUserId(userId)
                 .stream().map(PurchaseMapper::toModelPurchase).collect(Collectors.toList());
-    }
-
-    @Override
-    public PurchaseModel findByUserId(Long userId) {
-        return null;
     }
 }

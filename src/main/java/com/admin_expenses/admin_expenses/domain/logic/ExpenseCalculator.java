@@ -2,6 +2,7 @@ package com.admin_expenses.admin_expenses.domain.logic;
 
 import com.admin_expenses.admin_expenses.domain.model.MonthlyCardExpense;
 import com.admin_expenses.admin_expenses.domain.model.PurchaseModel;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class ExpenseCalculator {
     public BigDecimal totalExpenses(List<PurchaseModel> purchaseModels) {
         return purchaseModels.stream()

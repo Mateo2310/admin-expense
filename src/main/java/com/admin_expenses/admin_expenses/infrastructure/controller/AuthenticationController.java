@@ -1,4 +1,4 @@
-package com.admin_expenses.admin_expenses.infrastructure.controller.auth;
+package com.admin_expenses.admin_expenses.infrastructure.controller;
 
 import com.admin_expenses.admin_expenses.application.dto.AuthenticationResponse;
 import com.admin_expenses.admin_expenses.application.dto.UserCreateDTO;

@@ -5,18 +5,16 @@ import com.admin_expenses.admin_expenses.domain.repository.UserRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.UserEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.UserMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IUserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final IUserRepository iUserRepository;
-
-    public UserRepositoryImpl(IUserRepository iUserRepository) {
-        this.iUserRepository = iUserRepository;
-    }
 
     @Override
     public UserModel findById(Long id) {
@@ -29,16 +27,6 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity userEntity = UserMapper.toUserEntity(userModel);
         UserEntity userSaved = this.iUserRepository.save(userEntity);
         return UserMapper.toDomainUser(userSaved);
-    }
-
-    @Override
-    public UserModel update(UserModel userModel) {
-        return UserMapper.toDomainUser(this.iUserRepository.save(UserMapper.toUserEntity(userModel)));
-    }
-
-    @Override
-    public void delete(UserModel userModel) {
-        this.iUserRepository.delete(UserMapper.toUserEntity(userModel));
     }
 
     @Override

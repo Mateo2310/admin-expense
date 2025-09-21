@@ -5,10 +5,8 @@ import com.admin_expenses.admin_expenses.domain.model.CardTierModel;
 import java.util.List;
 
 public interface CardTierRepository {
-    CardTierModel findById(Long id);
+    CardTierModel findById(Long id, Long userId);
     CardTierModel save(CardTierModel cardTierModel);
-    CardTierModel update(CardTierModel cardTierModel);
-    void deleteById(Long id);
-    CardTierModel findByName(String name);
-    List<CardTierModel> findAll();
+    void deleteById(Long id, Long userId);
+    List<CardTierModel> findAll(Long userId);
 }

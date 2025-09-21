@@ -28,6 +28,10 @@ public class UserDetailsImpl implements UserDetails {
         return this.userModel.getUsername();
     }
 
+    public UserModel getUserModel() {
+        return this.userModel;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();

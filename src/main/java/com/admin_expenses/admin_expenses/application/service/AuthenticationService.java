@@ -23,7 +23,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public AuthenticationResponse register(UserCreateDTO request) {
-        String token = this.userService.create(request);
+        String token = this.userService.create(request, , );
         return AuthenticationResponse.builder()
                 .token(token)
                 .build();

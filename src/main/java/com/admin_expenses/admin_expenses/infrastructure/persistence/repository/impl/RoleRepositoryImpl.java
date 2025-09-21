@@ -5,18 +5,16 @@ import com.admin_expenses.admin_expenses.domain.repository.RoleRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.RoleEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.RoleMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IRoleRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class RoleRepositoryImpl implements RoleRepository {
     private final IRoleRepository iRoleRepository;
-
-    public RoleRepositoryImpl(IRoleRepository iRoleRepository) {
-        this.iRoleRepository = iRoleRepository;
-    }
 
     @Override
     public RoleModel findById(Long id) {
@@ -31,16 +29,6 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public RoleModel update(RoleModel roleModel) {
-        return RoleMapper.toDomainRole(this.iRoleRepository.save(RoleMapper.toRoleEntity(roleModel)));
-    }
-
-    @Override
-    public void delete(RoleModel roleModel) {
-        this.iRoleRepository.delete(RoleMapper.toRoleEntity(roleModel));
-    }
-
-    @Override
     public void deleteById(Long id) {
         this.iRoleRepository.deleteById(id);
     }
@@ -48,15 +36,5 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     public List<RoleModel> findAll() {
         return this.iRoleRepository.findAll().stream().map(RoleMapper::toDomainRole).collect(Collectors.toList());
-    }
-
-    @Override
-    public RoleModel findByUserId(Long userId) {
-        return null;
-    }
-
-    @Override
-    public RoleModel findByName(String name) {
-        return this.iRoleRepository.findByName(name).map(RoleMapper::toDomainRole).orElse(null);
     }
 }

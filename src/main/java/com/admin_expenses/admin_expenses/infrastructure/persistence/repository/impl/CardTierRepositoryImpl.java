@@ -5,6 +5,7 @@ import com.admin_expenses.admin_expenses.domain.repository.CardTierRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.CardTierEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.CardTierMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.ICardTierRepository;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -14,18 +15,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class CardTierRepositoryImpl implements CardTierRepository {
-
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
     private final ICardTierRepository iCardTierRepository;
 
-    public CardTierRepositoryImpl(ICardTierRepository iCardTierRepository) {
-        this.iCardTierRepository = iCardTierRepository;
-    }
-
     @Override
-    public CardTierModel findById(Long id) {
-        return this.iCardTierRepository.findById(id).map(CardTierMapper::toDomainCardTier).orElse(null);
+    public CardTierModel findById(Long id, Long userId) {
+        return this.iCardTierRepository.findCardTierByIdAndUserId(id, userId).map(CardTierMapper::toDomainCardTier).orElse(null);
     }
 
     @Override
@@ -36,23 +32,12 @@ public class CardTierRepositoryImpl implements CardTierRepository {
     }
 
     @Override
-    public CardTierModel update(CardTierModel cardTierModel) {
-        return CardTierMapper.toDomainCardTier(this.iCardTierRepository.save(CardTierMapper.toCardTierEntity(cardTierModel)));
+    public void deleteById(Long id, Long userId) {
+        this.iCardTierRepository.deleteByIdAndUserId(id, userId);
     }
 
     @Override
-    public void deleteById(Long id) {
-        this.iCardTierRepository.deleteById(id);
-    }
-
-    @Override
-    public CardTierModel findByName(String name) {
-        Optional<CardTierEntity> cardTierFinded = this.iCardTierRepository.findCardTierEntitieByName(name);
-        return cardTierFinded.map(CardTierMapper::toDomainCardTier).orElse(null);
-    }
-
-    @Override
-    public List<CardTierModel> findAll() {
-        return this.iCardTierRepository.findAll().stream().map(CardTierMapper::toDomainCardTier).collect(Collectors.toList());
+    public List<CardTierModel> findAll(Long userId) {
+        return this.iCardTierRepository.findAllByUserId(userId).stream().map(CardTierMapper::toDomainCardTier).collect(Collectors.toList());
     }
 }

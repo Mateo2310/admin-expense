@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class PurchaseRequestDTO implements Serializable {
     private Integer quantity;
 
     @NotNull(message = "El monto de la cuota es obligatoria")
-    private Double installmentAmount;
+    private BigDecimal installmentAmount;
 
     @NotBlank(message = "El tipo de gasto es obligatorio")
     private String purchaseType;

@@ -47,7 +47,7 @@ public class PurchaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity createdBy;
 
-    public PurchaseEntity(Long id, String productName, Integer quantity, Double installmentAmount, String purchaseType, Integer fees, CardEntity card, UserEntity createdBy, LocalDate purchaseDate) {
+    public PurchaseEntity(Long id, String productName, Integer quantity, BigDecimal installmentAmount, String purchaseType, Integer fees, CardEntity card, UserEntity createdBy, LocalDate purchaseDate) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;

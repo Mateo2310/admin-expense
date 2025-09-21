@@ -7,8 +7,6 @@ import java.util.List;
 public interface UserRepository {
     UserModel findById(Long id);
     UserModel save(UserModel userModel);
-    UserModel update(UserModel userModel);
-    void delete(UserModel userModel);
     void deleteById(Long id);
     List<UserModel> findAll();
     UserModel findByUsername(String username);

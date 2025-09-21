@@ -18,13 +18,13 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity<?> createRole(@RequestBody RoleCreateDTO roleCreateDTO) {
-        String dto = iRolesService.create(roleCreateDTO);
+        String dto = this.iRolesService.create(roleCreateDTO);
         return ResponseEntity.ok().body(new ResponseGeneric<>("success", "Role created", dto));
     }
 
     @GetMapping
     public ResponseEntity<?> findAll() {
-        List<RoleResponseDTO> roles = iRolesService.findAll();
+        List<RoleResponseDTO> roles = this.iRolesService.findAll();
         return ResponseEntity.ok().body(new  ResponseGeneric<>("success", "Roles", roles));
     }
 
@@ -36,7 +36,7 @@ public class RoleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRole(@PathVariable Long id) {
-        RoleResponseDTO role = iRolesService.findById(id);
+        RoleResponseDTO role = this.iRolesService.findById(id);
         return ResponseEntity.ok().body(new  ResponseGeneric<>("success", "Role", role));
     }
 }

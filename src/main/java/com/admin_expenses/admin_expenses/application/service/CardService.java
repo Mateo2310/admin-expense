@@ -24,18 +24,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CardService implements ICardService {
     private final CardRepository cardRepository;
-    private final UserRepository userRepository;
     private final FinantialInstituteRepository finantialInstituteRepository;
 
     @Override
-    public String create(CardRequestDTO dto) {
-        FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findById(dto.getFinantialInstituteId());
-        UserModel userModelEntity = this.userRepository.findById(dto.getUserId());
+    public String create(CardRequestDTO dto, UserModel userModel) {
+        FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findById(dto.getFinantialInstituteId(), userModel.getId());
         if (finantialInstituteModel == null) {
             throw new FinantialInstituteNotFoundException(dto.getFinantialInstituteId());
-        }
-        if (userModelEntity == null) {
-            throw new UserNotFoundException(dto.getUserId());
         }
 
         CardType cardType = this.getCardType(dto.getCardType());
@@ -43,7 +38,7 @@ public class CardService implements ICardService {
         cardModel.setAlias(dto.getAlias());
         cardModel.setCardType(cardType);
         cardModel.setFinantialInstituteModel(finantialInstituteModel);
-        cardModel.setCreatedBy(userModelEntity);
+        cardModel.setCreatedBy(userModel);
 
         try {
             this.cardRepository.save(cardModel);
@@ -59,43 +54,14 @@ public class CardService implements ICardService {
     }
 
     @Override
-    public String delete(String name) {return "";}
-
-    @Override
-    public String update(CardRequestDTO dto) {
-        CardModel cardModelFindedOpt = this.cardRepository.findById(dto.getCardId());
-        FinantialInstituteModel finantialInstituteModel = this.finantialInstituteRepository.findById(dto.getFinantialInstituteId());
-
-        if (finantialInstituteModel == null) throw new FinantialInstituteNotFoundException(dto.getFinantialInstituteId());
-        if (cardModelFindedOpt == null) throw new CardNotFoundException(dto.getCardId());
-
-        CardType cardType = this.getCardType(dto.getCardType());
-
-        cardModelFindedOpt.setFinantialInstituteModel(finantialInstituteModel);
-        cardModelFindedOpt.setCardType(cardType);
-        cardModelFindedOpt.setAlias(dto.getAlias());
-
-        try {
-            this.cardRepository.update(cardModelFindedOpt);
-        } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
-        } catch (CannotCreateTransactionException cctex) {
-            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
-        } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar la tarjeta", e);
-        }
-        return "SUCCESS";
-    }
-
-    @Override
-    public String deleteById(Long id) {
-        CardModel cardModelFindedOpt = this.cardRepository.findById(id);
+    public String deleteById(Long id, Long userId) {
+        CardModel cardModelFindedOpt = this.cardRepository.findById(id, userId);
         if (cardModelFindedOpt == null) {
             throw new CardNotFoundException(id);
         }
 
         try {
-            this.cardRepository.deleteById(cardModelFindedOpt.getId());
+            this.cardRepository.deleteById(cardModelFindedOpt.getId(), userId);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -107,10 +73,10 @@ public class CardService implements ICardService {
     }
 
     @Override
-    public CardResponseDTO findById(Long id) {
+    public CardResponseDTO findById(Long id, Long userId) {
         CardModel cardModel;
         try {
-            cardModel = this.cardRepository.findById(id);
+            cardModel = this.cardRepository.findById(id, userId);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {
@@ -127,10 +93,10 @@ public class CardService implements ICardService {
     }
 
     @Override
-    public List<CardResponseDTO> findAll() {
+    public List<CardResponseDTO> findAll(Long userId) {
         List<CardModel> cardModelList;
         try {
-            cardModelList = this.cardRepository.findAll();
+            cardModelList = this.cardRepository.findAll(userId);
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException("Violación de integridad al guardar la tarjeta", e);
         } catch (CannotCreateTransactionException cctex) {

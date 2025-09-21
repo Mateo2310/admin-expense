@@ -30,12 +30,12 @@ public class UserCreateDTO implements Serializable {
     private String email;
 
     @NotBlank(message = "El rol es obligatorio")
-    private String roleName;
+    private Long roleId;
 
-    public UserCreateDTO(String name, String email, String lastname, String roleName) {
+    public UserCreateDTO(String name, String email, String lastname, Long roleId) {
         this.name = name;
         this.email = email;
         this.lastname = lastname;
-        this.roleName = roleName;
+        this.roleId = roleId;
     }
 }

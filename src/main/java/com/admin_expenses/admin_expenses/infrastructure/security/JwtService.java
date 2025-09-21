@@ -3,8 +3,6 @@ package com.admin_expenses.admin_expenses.infrastructure.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
     private static final String SECRET = "1f00b2d64bcf30deb2c59140b75932bff3ab0856eb30d0cd1fddd1b03dd3740c";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 

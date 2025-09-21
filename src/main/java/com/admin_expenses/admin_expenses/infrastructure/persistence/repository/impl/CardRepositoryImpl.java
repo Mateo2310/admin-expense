@@ -5,22 +5,20 @@ import com.admin_expenses.admin_expenses.domain.repository.CardRepository;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.CardEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.CardMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.ICardRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class CardRepositoryImpl implements CardRepository {
     private final ICardRepository iCardRepository;
 
-    public CardRepositoryImpl(ICardRepository iCardRepositoryr) {
-        this.iCardRepository = iCardRepositoryr;
-    }
-
     @Override
-    public CardModel findById(Long id) {
-        return this.iCardRepository.findById(id)
+    public CardModel findById(Long id, Long userId) {
+        return this.iCardRepository.findByIdAndUserId(id, userId)
                 .map(CardMapper::toDomainCard).orElse(null);
     }
 
@@ -32,27 +30,12 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public CardModel update(CardModel cardModel) {
-        return CardMapper.toDomainCard(this.iCardRepository.save(CardMapper.toCardEntity(cardModel)));
+    public void deleteById(Long id, Long userId) {
+        this.iCardRepository.deleteByIdAndUserId(id, userId);
     }
 
     @Override
-    public void delete(CardModel cardModel) {
-        this.iCardRepository.delete(CardMapper.toCardEntity(cardModel));
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        this.iCardRepository.deleteById(id);
-    }
-
-    @Override
-    public List<CardModel> findAll() {
-        return this.iCardRepository.findAll().stream().map(CardMapper::toDomainCard).collect(Collectors.toList());
-    }
-
-    @Override
-    public CardModel findByUserId(Long userId) {
-        return null;
+    public List<CardModel> findAll(Long userId) {
+        return this.iCardRepository.findAllByUserId(userId).stream().map(CardMapper::toDomainCard).collect(Collectors.toList());
     }
 }

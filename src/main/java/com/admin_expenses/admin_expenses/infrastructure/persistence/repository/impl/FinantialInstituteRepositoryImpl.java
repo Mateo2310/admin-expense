@@ -5,6 +5,7 @@ import com.admin_expenses.admin_expenses.domain.repository.FinantialInstituteRep
 import com.admin_expenses.admin_expenses.infrastructure.persistence.entity.FinantialInstituteEntity;
 import com.admin_expenses.admin_expenses.infrastructure.mapper.FinantialInstituteMapper;
 import com.admin_expenses.admin_expenses.infrastructure.persistence.repository.interfaces.IFinantialInstitueRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,23 +13,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@AllArgsConstructor
 public class FinantialInstituteRepositoryImpl implements FinantialInstituteRepository {
 
     private final IFinantialInstitueRepository iFinantialInstitueRepository;
 
-    public FinantialInstituteRepositoryImpl(IFinantialInstitueRepository iFinantialInstitueRepository) {
-        this.iFinantialInstitueRepository = iFinantialInstitueRepository;
-    }
-
     @Override
-    public FinantialInstituteModel findById(Long id) {
-        Optional<FinantialInstituteEntity> finantialInstituteEntityOptional = this.iFinantialInstitueRepository.findById(id);
+    public FinantialInstituteModel findById(Long id, Long userId) {
+        Optional<FinantialInstituteEntity> finantialInstituteEntityOptional = this.iFinantialInstitueRepository.findByIdAndUserId(id, userId);
         return finantialInstituteEntityOptional.map(FinantialInstituteMapper::toDomainFinantianInstitute).orElse(null);
-    }
-
-    @Override
-    public FinantialInstituteModel findByUserId(Long userId) {
-        return null;
     }
 
     @Override
@@ -40,29 +33,13 @@ public class FinantialInstituteRepositoryImpl implements FinantialInstituteRepos
     }
 
     @Override
-    public FinantialInstituteModel update(FinantialInstituteModel finantialInstituteModel) {
-        return FinantialInstituteMapper.toDomainFinantianInstitute(this.iFinantialInstitueRepository.save(FinantialInstituteMapper.toFinantialInstitute(finantialInstituteModel)));
+    public void deleteById(Long id, Long userId) {
+        this.iFinantialInstitueRepository.deleteByIdAndUserId(id, userId);
     }
 
     @Override
-    public void delete(FinantialInstituteModel finantialInstituteModel) {
-        this.iFinantialInstitueRepository.delete(FinantialInstituteMapper.toFinantialInstitute(finantialInstituteModel));
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        this.iFinantialInstitueRepository.deleteById(id);
-    }
-
-    @Override
-    public List<FinantialInstituteModel> findAll() {
-        return this.iFinantialInstitueRepository.findAll()
+    public List<FinantialInstituteModel> findAll(Long userId) {
+        return this.iFinantialInstitueRepository.findAllByUserId(userId)
                 .stream().map(FinantialInstituteMapper::toDomainFinantianInstitute).collect(Collectors.toList());
-    }
-
-    @Override
-    public FinantialInstituteModel findByName(String name) {
-        FinantialInstituteEntity finantialInstituteEntity = this.iFinantialInstitueRepository.findByName(name);
-        return FinantialInstituteMapper.toDomainFinantianInstitute(finantialInstituteEntity);
     }
 }

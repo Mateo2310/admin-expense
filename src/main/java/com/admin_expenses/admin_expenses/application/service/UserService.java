@@ -33,9 +33,9 @@ public class UserService implements IUserService {
     @Override
     public String create(UserCreateDTO creationDTO) {
         try {
-            RoleModel roleModel = this.roleRepository.findByName(creationDTO.getRoleName());
+            RoleModel roleModel = this.roleRepository.findById(creationDTO.getRoleId());
             if (roleModel == null) {
-                throw new RoleNotFoundException(creationDTO.getRoleName());
+                throw new RoleNotFoundException(creationDTO.getRoleId());
             }
             UserModel newUserModel = new UserModel();
             newUserModel.setName(creationDTO.getName());
@@ -53,50 +53,6 @@ public class UserService implements IUserService {
             throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
         } catch (Exception e) {
             logger.error("Error al crear usuario: {}", e.getMessage());
-            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
-        }
-    }
-
-    @Override
-    public String delete(String name) {
-        try {
-            UserModel userModelFinded = this.userRepository.findByUsername(name);
-            if (userModelFinded == null) {
-                throw new UserNotFoundException(name);
-            }
-            this.userRepository.delete(userModelFinded);
-            return "SUCESS";
-        } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar el usuario", e);
-        } catch (CannotCreateTransactionException cctex) {
-            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
-        } catch (Exception e) {
-            throw new UnexpectedException("Error inesperado al guardar el usuario", e);
-        }
-    }
-
-    @Override
-    public String update(UserCreateDTO dto) {
-        try {
-            UserModel userModel = this.userRepository.findByUsername(dto.getName());
-            RoleModel roleModelFinded = this.roleRepository.findByName(dto.getRoleName());
-            if (userModel == null) {
-                throw new UserNotFoundException(dto.getName());
-            }
-            if (roleModelFinded == null) {
-                throw new RoleNotFoundException(dto.getRoleName());
-            }
-            userModel.setLastname(dto.getLastname());
-            userModel.setUsername(dto.getEmail());
-            userModel.setRoleModel(roleModelFinded);
-
-            this.userRepository.update(userModel);
-            return "SUCCESS";
-        } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Violación de integridad al guardar el usuario", e);
-        } catch (CannotCreateTransactionException cctex) {
-            throw new DatabaseUnavailableException("No se pudo conectar con la base de datos", cctex);
-        } catch (Exception e) {
             throw new UnexpectedException("Error inesperado al guardar el usuario", e);
         }
     }
